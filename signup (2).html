@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PayFlow – Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #111827;
+    --border: #1e2d45;
+    --accent: #00d4aa;
+    --accent2: #3b82f6;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #f0f4ff;
+    --muted: #8896a8;
+    --card: #151f2e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,212,170,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(59,130,246,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(30,45,69,0.4) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(30,45,69,0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    z-index: 1;
+  }
+  .left-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 48px;
+    border-right: 1px solid var(--border);
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 60px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .hero-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px; font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .hero-text h1 span { color: var(--accent); }
+  .hero-text p { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 380px; }
+  .stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-top: 48px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-card .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-card .label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .right-panel {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 60px 48px;
+  }
+  .form-header { margin-bottom: 32px; }
+  .form-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .form-header p { color: var(--muted); font-size: 14px; }
+  .form-header p a { color: var(--accent); text-decoration: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-size: 15px; font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+  }
+  .field select option { background: var(--panel); }
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #00b894);
+    color: #0a0e1a;
+    border: none; border-radius: 10px;
+    padding: 15px;
+    font-size: 15px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,212,170,0.3);
+  }
+  .divider {
+    text-align: center; margin: 20px 0;
+    color: var(--muted); font-size: 13px;
+    position: relative;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute; top: 50%;
+    width: 42%; height: 1px;
+    background: var(--border);
+  }
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+  .terms {
+    font-size: 12px; color: var(--muted);
+    text-align: center; margin-top: 16px; line-height: 1.6;
+  }
+  .terms a { color: var(--accent); text-decoration: none; }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 12px; padding: 14px 20px;
+    font-size: 14px; display: flex; align-items: center; gap: 10px;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.3s; z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .left-panel { display: none; }
+    .right-panel { padding: 40px 24px; }
+  }
+</style>
+
+<!-- Segment Analytics -->
+<script>
+!function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["track","page","identify"];analytics.factory=function(e){return function(){var n=Array.prototype.slice.call(arguments);n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){analytics[analytics.methods[n]]=analytics.factory(analytics.methods[n])}analytics.load=function(key){var t=document.createElement("script");t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)};analytics.load("bCIQ3VUibreTA3bCSBKXZNj5gRkUw1O6");analytics.page("Signup Page", {
+  page_category: "Authentication",
+  platform: "PayFlow Merchant Portal"
+});}}();
+</script>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="container">
+  <div class="left-panel">
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      PayFlow
+    </div>
+    <div class="hero-text">
+      <h1>Start your<br/><span>merchant</span><br/>journey</h1>
+      <p>Join thousands of merchants growing their business with unified intelligence — real-time health, fraud protection, and smarter payouts.</p>
+    </div>
+    <div class="stats">
+      <div class="stat-card"><div class="val">15–20%</div><div class="label">Merchant recovery rate</div></div>
+      <div class="stat-card"><div class="val">0.92</div><div class="label">Avg trust score</div></div>
+      <div class="stat-card"><div class="val">10–18%</div><div class="label">Conversion uplift</div></div>
+      <div class="stat-card"><div class="val">40%</div><div class="label">Fewer false positives</div></div>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="form-header">
+      <h2>Create your account</h2>
+      <p>Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+    <form id="signupForm" onsubmit="return handleSignup(event)">
+      <div class="form-row">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="Priya" required oninput="trackFieldFill('first_name')"/>
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Sharma" required oninput="trackFieldFill('last_name')"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Business Email</label>
+        <input type="email" id="email" placeholder="priya@merchant.com" required oninput="trackFieldFill('email')"/>
+      </div>
+      <div class="field">
+        <label>Business Name</label>
+        <input type="text" id="businessName" placeholder="Priya's Marketplace" required oninput="trackFieldFill('business_name')"/>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Business Type</label>
+          <select id="businessType" onchange="trackFieldFill('business_type')">
+            <option value="">Select type</option>
+            <option value="marketplace">Marketplace</option>
+            <option value="ecommerce">E-Commerce</option>
+            <option value="saas">SaaS</option>
+            <option value="fintech">Fintech</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Monthly Volume</label>
+          <select id="volume" onchange="trackFieldFill('monthly_volume')">
+            <option value="">Select range</option>
+            <option value="<10k">Under $10K</option>
+            <option value="10k-100k">$10K – $100K</option>
+            <option value="100k-1m">$100K – $1M</option>
+            <option value=">1m">$1M+</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 8 characters" required oninput="trackFieldFill('password')"/>
+      </div>
+      <button type="submit" class="btn-primary" id="signupBtn">Create Merchant Account →</button>
+    </form>
+    <p class="terms">By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">Account created! Redirecting…</span>
+</div>
+
+<script>
+  const filledFields = new Set();
+
+  function trackFieldFill(fieldName) {
+    if (!filledFields.has(fieldName)) {
+      filledFields.add(fieldName);
+      analytics.track('Signup Form Field Filled', {
+        field_name: fieldName,
+        page: 'signup',
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  function showToast(msg, success = true) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.borderColor = success ? 'var(--accent)' : 'var(--danger)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function handleSignup(e) {
+    e.preventDefault();
+    const btn = document.getElementById('signupBtn');
+    btn.textContent = 'Creating account…';
+    btn.disabled = true;
+
+    const email = document.getElementById('email').value;
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const businessName = document.getElementById('businessName').value;
+    const businessType = document.getElementById('businessType').value;
+    const volume = document.getElementById('volume').value;
+
+    // Generate merchant ID
+    const merchantId = 'M_' + Math.floor(Math.random() * 9000 + 1000);
+
+    // Segment identify call
+    analytics.identify(merchantId, {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      name: firstName + ' ' + lastName,
+      businessName: businessName,
+      businessType: businessType,
+      monthlyVolume: volume,
+      onboardingProgress: 0,
+      trustScore: null,
+      churnRisk: null,
+      createdAt: new Date().toISOString(),
+      plan: 'free_trial'
+    });
+
+    // Segment track call
+    analytics.track('Merchant Signed Up', {
+      merchant_id: merchantId,
+      email: email,
+      business_name: businessName,
+      business_type: businessType,
+      monthly_volume: volume,
+      signup_source: 'web',
+      timestamp: new Date().toISOString()
+    });
+
+    // Store merchant in localStorage for demo
+    const merchantData = {
+      merchantId, email, firstName, lastName,
+      businessName, businessType, volume,
+      onboardingProgress: 20,
+      lastLogin: 'Just now',
+      supportTickets: 0,
+      churnRisk: 'LOW',
+      trustScore: '5/10',
+      status: 'onboarding'
+    };
+    localStorage.setItem('merchantData', JSON.stringify(merchantData));
+    localStorage.setItem('isLoggedIn', 'true');
+
+    showToast('Account created! Redirecting to dashboard…');
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1800);
+    return false;
+  }
+
+  // Track page engagement
+  let startTime = Date.now();
+  window.addEventListener('beforeunload', () => {
+    analytics.track('Signup Page Abandoned', {
+      time_spent_seconds: Math.round((Date.now() - startTime) / 1000),
+      fields_filled: Array.from(filledFields)
+    });
+  });
+</script>
+</body>
+</html>

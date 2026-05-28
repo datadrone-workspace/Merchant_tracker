@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PayFlow – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #111827;
+    --border: #1e2d45;
+    --accent: #00d4aa;
+    --accent2: #3b82f6;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #f0f4ff;
+    --muted: #8896a8;
+    --card: #151f2e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,212,170,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 80% 90%, rgba(59,130,246,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(30,45,69,0.4) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(30,45,69,0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .wrapper {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 480px;
+    padding: 24px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 40px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+  }
+  .card-header { text-align: center; margin-bottom: 32px; }
+  .card-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .card-header p { color: var(--muted); font-size: 14px; }
+  .card-header p a { color: var(--accent); text-decoration: none; }
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field-row {
+    display: flex; align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field-row:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+  }
+  .field-row input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 13px 16px;
+    font-size: 15px; font-family: 'DM Sans', sans-serif;
+    color: var(--text); outline: none;
+  }
+  .field-row .icon {
+    padding: 0 14px; color: var(--muted); font-size: 16px;
+  }
+  .remember-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+  .remember-row label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--muted); cursor: pointer;
+  }
+  .remember-row input[type="checkbox"] { accent-color: var(--accent); }
+  .remember-row a { font-size: 14px; color: var(--accent); text-decoration: none; }
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #00b894);
+    color: #0a0e1a;
+    border: none; border-radius: 10px;
+    padding: 15px;
+    font-size: 15px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,212,170,0.3);
+  }
+  .demo-hint {
+    background: rgba(0,212,170,0.06);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 20px;
+    font-size: 13px; color: var(--muted);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .demo-hint strong { color: var(--accent); display: block; margin-bottom: 4px; }
+  .error-msg {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px; color: #fca5a5;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 12px; padding: 14px 20px;
+    font-size: 14px; display: flex; align-items: center; gap: 10px;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.3s; z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .activity-strip {
+    margin-top: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .activity-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--muted);
+  }
+  .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+</style>
+
+<!-- Segment Analytics -->
+<script>
+!function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["track","page","identify"];analytics.factory=function(e){return function(){var n=Array.prototype.slice.call(arguments);n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){analytics[analytics.methods[n]]=analytics.factory(analytics.methods[n])}analytics.load=function(key){var t=document.createElement("script");t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)};analytics.load("bCIQ3VUibreTA3bCSBKXZNj5gRkUw1O6");analytics.page("Login Page", {
+  page_category: "Authentication",
+  platform: "PayFlow Merchant Portal"
+});}}();
+</script>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    PayFlow
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h2>Welcome back</h2>
+      <p>Don't have an account? <a href="signup.html">Sign up free</a></p>
+    </div>
+    <div class="error-msg" id="errorMsg">Invalid email or password. Please try again.</div>
+    <form onsubmit="return handleLogin(event)">
+      <div class="field">
+        <label>Email Address</label>
+        <div class="field-row">
+          <span class="icon">✉</span>
+          <input type="email" id="email" placeholder="you@merchant.com" required
+            onfocus="trackFocus('email')" onblur="trackBlur('email')"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-row">
+          <span class="icon">🔒</span>
+          <input type="password" id="password" placeholder="••••••••" required
+            onfocus="trackFocus('password')"/>
+        </div>
+      </div>
+      <div class="remember-row">
+        <label><input type="checkbox" id="remember"/> Remember me</label>
+        <a href="#" onclick="trackForgotPassword()">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn-primary" id="loginBtn">Sign In to Dashboard →</button>
+    </form>
+    <div class="demo-hint">
+      <span>ℹ</span>
+      <div>
+        <strong>Demo Mode</strong>
+        Use any email + password to sign in. All actions are tracked in Segment.
+      </div>
+    </div>
+    <div class="activity-strip">
+      <div class="activity-item"><div class="pulse"></div> 3 merchants logged in the last hour</div>
+      <div class="activity-item"><div class="pulse"></div> Real-time tracking active</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">Signing in…</span>
+</div>
+
+<script>
+  let loginAttempts = 0;
+  let pageLoadTime = Date.now();
+
+  function trackFocus(field) {
+    analytics.track('Login Form Field Focused', {
+      field_name: field,
+      page: 'login',
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  function trackBlur(field) {
+    analytics.track('Login Form Field Blurred', {
+      field_name: field,
+      page: 'login'
+    });
+  }
+
+  function trackForgotPassword() {
+    analytics.track('Forgot Password Clicked', {
+      page: 'login',
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  function showToast(msg, success = true) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.borderColor = success ? 'var(--accent)' : 'var(--danger)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    loginAttempts++;
+    const btn = document.getElementById('loginBtn');
+    const email = document.getElementById('email').value;
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.style.display = 'none';
+
+    btn.textContent = 'Signing in…';
+    btn.disabled = true;
+
+    // Track login attempt
+    analytics.track('Merchant Login Attempted', {
+      email: email,
+      attempt_number: loginAttempts,
+      time_on_page_seconds: Math.round((Date.now() - pageLoadTime) / 1000),
+      timestamp: new Date().toISOString()
+    });
+
+    // Simulate auth (accept any credentials for demo)
+    setTimeout(() => {
+      // Load or create merchant data
+      let merchantData = JSON.parse(localStorage.getItem('merchantData') || 'null');
+      if (!merchantData) {
+        const merchantId = 'M_' + Math.floor(Math.random() * 9000 + 1000);
+        merchantData = {
+          merchantId,
+          email,
+          firstName: email.split('@')[0],
+          lastName: 'Merchant',
+          businessName: email.split('@')[1]?.split('.')[0] + ' Store' || 'Demo Store',
+          businessType: 'marketplace',
+          onboardingProgress: 80,
+          lastLogin: '5 days ago',
+          supportTickets: 2,
+          churnRisk: 'HIGH',
+          trustScore: '7/10',
+          status: 'at_risk'
+        };
+        localStorage.setItem('merchantData', JSON.stringify(merchantData));
+      }
+
+      // Update last login
+      merchantData.lastLogin = 'Just now';
+      localStorage.setItem('merchantData', JSON.stringify(merchantData));
+      localStorage.setItem('isLoggedIn', 'true');
+
+      // Segment identify
+      analytics.identify(merchantData.merchantId, {
+        email: merchantData.email,
+        name: merchantData.firstName + ' ' + merchantData.lastName,
+        businessName: merchantData.businessName,
+        lastLoginAt: new Date().toISOString(),
+        onboardingProgress: merchantData.onboardingProgress,
+        churnRisk: merchantData.churnRisk,
+        trustScore: merchantData.trustScore,
+        supportTickets: merchantData.supportTickets
+      });
+
+      // Segment track login success
+      analytics.track('Merchant Logged In', {
+        merchant_id: merchantData.merchantId,
+        email: merchantData.email,
+        business_name: merchantData.businessName,
+        churn_risk: merchantData.churnRisk,
+        trust_score: merchantData.trustScore,
+        onboarding_progress: merchantData.onboardingProgress,
+        login_method: 'email_password',
+        attempt_number: loginAttempts,
+        timestamp: new Date().toISOString()
+      });
+
+      showToast('Signed in! Loading your dashboard…');
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }, 1000);
+
+    return false;
+  }
+</script>
+</body>
+</html>
