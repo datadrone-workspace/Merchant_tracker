@@ -379,6 +379,43 @@
   .gap-2 { gap: 8px; }
   .items-center { align-items: center; }
   .justify-between { justify-content: space-between; }
+
+  /* ── PAYMENT METHOD CARDS ── */
+  .pay-method-card {
+    background: var(--surface2); border: 2px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; cursor: pointer;
+    transition: all .2s; display: flex; align-items: center; gap: 12px;
+  }
+  .pay-method-card:hover { border-color: var(--accent); background: rgba(0,212,170,.06); }
+  .pay-method-card.selected { border-color: var(--accent); background: rgba(0,212,170,.1); }
+  .pay-method-card.recommended { border-color: var(--accent2); }
+  .pay-method-card.featured-first { border-color: var(--success); background: rgba(16,185,129,.06); }
+  .pm-name { font-weight: 600; font-size: 14px; }
+  .pm-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pm-info { flex: 1; }
+  .pm-badge-first    { display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(16,185,129,.15);color:var(--success);margin-right:4px; }
+  .pm-badge-preferred{ display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(0,212,170,.15);color:var(--accent);margin-right:4px; }
+  .pm-badge-rec      { display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(59,130,246,.15);color:var(--accent2);margin-right:4px; }
+  .pm-badge-slow     { display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(245,158,11,.12);color:var(--warning);margin-right:4px; }
+
+  /* ── REVIEW ROWS ── */
+  .review-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border); }
+  .review-row:last-child { border-bottom:none; }
+  .rr-key { font-size:13px;color:var(--muted); }
+  .rr-val { font-size:14px;font-weight:600; }
+
+  /* ── PERSONA BANNERS ── */
+  .persona-brazil { background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);color:var(--success); }
+  .persona-india  { background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:var(--warning); }
+
+  /* ── TXN TABLE ── */
+  .txn-id { font-size:11px;color:var(--muted);font-family:monospace;margin-top:2px; }
+
+  @keyframes bounceIn {
+    0%   { transform: scale(.5); opacity: 0; }
+    60%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -530,6 +567,17 @@
           </select>
         </div>
         <div class="field"><label>Monthly Income (₹)</label><input type="number" id="ob-income" placeholder="500000" oninput="updateOb1Progress()"/></div>
+        <div class="field form-full"><label>Country / Location</label>
+          <select id="ob-country" onchange="updateOb1Progress()">
+            <option value="">Select your country…</option>
+            <option value="India">🇮🇳 India</option>
+            <option value="Brazil">🇧🇷 Brazil</option>
+            <option value="USA">🇺🇸 United States</option>
+            <option value="UK">🇬🇧 United Kingdom</option>
+            <option value="EU">🇪🇺 Europe (EU)</option>
+            <option value="Other">🌐 Other</option>
+          </select>
+        </div>
       </div>
       <div class="onboard-nav">
         <span class="progress-text">Step 1 of 2 — Personal Details</span>
@@ -591,6 +639,8 @@
       <div class="nav-item" onclick="switchView('profile')"><span class="ni">👤</span> My Profile</div>
       <div class="nav-item" onclick="switchView('alert')"><span class="ni">🔔</span> Alert & Support</div>
       <div class="nav-item" onclick="switchView('documents')"><span class="ni">📄</span> My Documents</div>
+      <div class="nav-item" onclick="switchView('send')"><span class="ni">💸</span> Send Payment</div>
+      <div class="nav-item" onclick="switchView('transactions')"><span class="ni">📋</span> Transactions</div>
       <div class="nav-item" onclick="showPage('page-onboard1')"><span class="ni">✏️</span> Edit Onboarding</div>
       <hr style="border-color:var(--border);margin:12px 0;">
       <div class="nav-item" onclick="doLogout()"><span class="ni">🚪</span> Sign Out</div>
@@ -675,7 +725,7 @@
                     <div style="font-size:11px;color:var(--muted);margin-top:2px;">Uptime SLA</div>
                   </div>
                   <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--warning);">
-                    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--warning);">< 2hr</div>
+                    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--warning);">&lt; 2hr</div>
                     <div style="font-size:11px;color:var(--muted);margin-top:2px;">Avg Support SLA</div>
                   </div>
                 </div>
@@ -802,6 +852,130 @@
           </div>
         </div>
 
+        <!-- SEND PAYMENT VIEW -->
+        <div id="view-send">
+
+          <!-- Step: New Payment -->
+          <div id="sp-step-new">
+            <div style="max-width:580px;">
+              <div class="section-title">💸 New Payment</div>
+
+              <div class="field">
+                <label>Payment Corridor</label>
+                <select id="sp-corridor" onchange="onCorridorChange()">
+                  <option value="INR-USD">🇮🇳 INR → 🇺🇸 USD</option>
+                  <option value="INR-EUR">🇮🇳 INR → 🇪🇺 EUR</option>
+                  <option value="INR-BRL">🇮🇳 INR → 🇧🇷 BRL</option>
+                  <option value="INR-GBP">🇮🇳 INR → 🇬🇧 GBP</option>
+                  <option value="USD-INR">🇺🇸 USD → 🇮🇳 INR</option>
+                  <option value="USD-BRL">🇺🇸 USD → 🇧🇷 BRL</option>
+                </select>
+              </div>
+
+              <div class="form-grid" style="gap:16px;">
+                <div class="field">
+                  <label>Amount (<span id="sp-currency-label">₹</span>)</label>
+                  <input type="number" id="sp-amount" placeholder="e.g. 20000" min="1" oninput="onAmountInput()" />
+                </div>
+                <div class="field">
+                  <label>Recipient</label>
+                  <input type="text" id="sp-recipient" placeholder="Vendor / Customer name" oninput="onRecipientInput()" />
+                </div>
+              </div>
+
+              <!-- Personalisation context banner -->
+              <div id="sp-persona-banner" style="display:none;margin-bottom:16px;padding:14px 16px;border-radius:10px;font-size:13px;border:1px solid;"></div>
+
+              <!-- Recommendation banner -->
+              <div id="sp-recommendation" style="display:none;margin-bottom:20px;padding:14px 16px;background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.28);border-radius:10px;font-size:13px;color:var(--accent2);">
+                <span>⚡</span> <span id="sp-rec-text"></span>
+              </div>
+
+              <div style="margin-bottom:8px;">
+                <label style="font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Payment Method</label>
+              </div>
+              <div id="sp-methods-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;"></div>
+
+              <div id="sp-err" class="err-msg"></div>
+              <button class="btn btn-primary" style="width:auto;padding:13px 36px;" onclick="spGoReview()">Review Payment →</button>
+            </div>
+          </div>
+
+          <!-- Step: Review -->
+          <div id="sp-step-review" style="display:none;">
+            <div style="max-width:520px;">
+              <div class="section-title">🔍 Review Payment</div>
+              <div class="profile-card" style="padding:24px;margin-bottom:20px;">
+                <div id="sp-review-rows"></div>
+              </div>
+              <div style="display:flex;gap:12px;">
+                <button class="btn btn-secondary" style="flex:1;" onclick="spBack()">← Edit</button>
+                <button class="btn btn-primary" style="flex:2;" onclick="spConfirm()">Confirm &amp; Send →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step: Success -->
+          <div id="sp-step-success" style="display:none;">
+            <div style="max-width:480px;text-align:center;">
+              <div style="font-size:56px;margin-bottom:16px;animation:bounceIn .5s;">✅</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--success);margin-bottom:8px;">Payment Sent!</div>
+              <div style="font-size:14px;color:var(--muted);margin-bottom:28px;" id="sp-success-msg"></div>
+              <div class="profile-card" style="padding:20px;margin-bottom:20px;text-align:left;" id="sp-success-detail"></div>
+              <button class="btn btn-primary" style="width:auto;padding:13px 32px;" onclick="spReset()">Send Another Payment</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRANSACTIONS VIEW -->
+        <div id="view-transactions">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div class="section-title" style="margin-bottom:0;">📋 Transactions</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select id="txn-filter-status" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+                <option value="">All Status</option>
+                <option value="Success">Success</option>
+                <option value="Pending">Pending</option>
+                <option value="Failed">Failed</option>
+                <option value="Refunded">Refunded</option>
+              </select>
+              <select id="txn-filter-method" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+                <option value="">All Methods</option>
+                <option value="UPI">UPI</option>
+                <option value="Card">Card</option>
+                <option value="NEFT/IMPS">NEFT/IMPS</option>
+                <option value="PIX">PIX</option>
+                <option value="SOFORT">SOFORT</option>
+                <option value="Wallet">Wallet</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- KPI row -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:24px;" id="txn-kpi-row"></div>
+
+          <!-- Table -->
+          <div class="profile-card" style="padding:0;overflow:hidden;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);background:var(--surface2);">
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Transaction</th>
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Recipient</th>
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Method</th>
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Corridor</th>
+                    <th style="padding:14px 16px;text-align:right;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Amount</th>
+                    <th style="padding:14px 16px;text-align:right;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Fee</th>
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Status</th>
+                    <th style="padding:14px 16px;text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Date</th>
+                  </tr>
+                </thead>
+                <tbody id="txn-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -830,6 +1004,8 @@ function startSession(user) {
     sessionStartedAtLocal: sessionState.startTime.toLocaleString('en-IN'),
     churnRisk: user.churnRisk,
     trustScore: user.trustScore,
+    device: detectDevice(),
+    country: user.onboarding?.details?.country || null,
   });
 
   updateSessionPanel();
@@ -994,14 +1170,17 @@ function doSignup() {
   saveUsers(users);
   setCurrentUser(email);
 
+  const _device = detectDevice();
+  newUser.device = _device;
   analytics.identify(newUser.mid, {
     name, email,
     createdAt: now,
     activationStatus: 'Not Activated',
     churnRisk: 'LOW',
     trustScore: 10,
+    device: _device,
   });
-  analytics.track('Merchant Signed Up', { merchantId: newUser.mid, email, name });
+  analytics.track('Merchant Signed Up', { merchantId: newUser.mid, email, name, device: _device });
 
   showToast('Account created! Welcome aboard.', 'success');
   // Clear signup form so it's blank for the next new user
@@ -1055,6 +1234,9 @@ function doLogin() {
   saveUserData(email, user);
   setCurrentUser(email);
 
+  const _loginDevice = detectDevice();
+  user.device = _loginDevice;
+  saveUserData(email, user);
   analytics.identify(user.mid, {
     name: user.name, email,
     lastLogin: now,
@@ -1062,6 +1244,8 @@ function doLogin() {
     trustScore: user.trustScore,
     activationStatus: user.activationStatus,
     onboardingProgress: user.onboarding.pct + '%',
+    device: _loginDevice,
+    country: user.onboarding?.details?.country || null,
   });
   analytics.track('Merchant Logged In', {
     merchantId: user.mid,
@@ -1070,6 +1254,8 @@ function doLogin() {
     churnRisk: user.churnRisk,
     trustScore: user.trustScore,
     recoveredAfterFailedAttempts: previousFails,
+    device: _loginDevice,
+    country: user.onboarding?.details?.country || null,
   });
 
   // Clear login form fields
@@ -1159,7 +1345,7 @@ function updateOb1Progress() {
   const user = getUserData(email);
   if (!user) return;
 
-  const fields = ['ob-fname','ob-lname','ob-age','ob-contact','ob-address','ob-ename','ob-eaddr','ob-btype','ob-income'];
+  const fields = ['ob-fname','ob-lname','ob-age','ob-contact','ob-address','ob-ename','ob-eaddr','ob-btype','ob-income','ob-country'];
   const values = {};
   let filled = 0;
   fields.forEach(f => {
@@ -1200,6 +1386,7 @@ function goToDocuments() {
     'ob-fname': 'firstName', 'ob-lname': 'lastName', 'ob-age': 'age',
     'ob-contact': 'contact', 'ob-address': 'address', 'ob-ename': 'enterpriseName',
     'ob-eaddr': 'enterpriseAddress', 'ob-btype': 'businessType', 'ob-income': 'monthlyIncome',
+    'ob-country': 'country',
   };
   Object.entries(fieldMap).forEach(([id, key]) => {
     const el = document.getElementById(id);
@@ -1207,6 +1394,19 @@ function goToDocuments() {
   });
   user.onboarding.step = Math.max(user.onboarding.step, 1);
   saveUserData(email, user);
+
+  const selectedCountry = user.onboarding.details.country;
+  if (selectedCountry) {
+    try {
+      analytics.track('Location Selected', {
+        merchantId: user.mid,
+        country: selectedCountry,
+        preferredCorridor: _locationToCorridor(selectedCountry),
+        preferredMethod: _locationToMethod(selectedCountry),
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
 
   renderDocGrid();
   document.getElementById('ob2-pct').textContent = user.onboarding.pct + '%';
@@ -1221,15 +1421,20 @@ function finishOnboarding() {
   updateActivationStatus(user);
   saveUserData(email, user);
 
+  const _obCountry = user.onboarding?.details?.country || null;
   analytics.track('Document Upload Completion status', {
     merchantId: user.mid,
     onboardingProgress: user.onboarding.pct + '%',
     activationStatus: user.activationStatus,
     docsUploaded: Object.keys(user.onboarding.docs).length,
+    country: _obCountry,
+    device: detectDevice(),
   });
   analytics.identify(user.mid, {
     onboardingProgress: user.onboarding.pct + '%',
     activationStatus: user.activationStatus,
+    country: _obCountry,
+    device: detectDevice(),
   });
 
   showToast('Onboarding saved! 🎉', 'success');
@@ -1273,6 +1478,7 @@ function populateOnboardingForm() {
     'ob-fname': 'firstName', 'ob-lname': 'lastName', 'ob-age': 'age',
     'ob-contact': 'contact', 'ob-address': 'address', 'ob-ename': 'enterpriseName',
     'ob-eaddr': 'enterpriseAddress', 'ob-btype': 'businessType', 'ob-income': 'monthlyIncome',
+    'ob-country': 'country',
   };
   Object.entries(fieldMap).forEach(([id, key]) => {
     const el = document.getElementById(id);
@@ -1308,6 +1514,8 @@ function loadDashboard() {
     trustScore: user.trustScore,
     activationStatus: user.activationStatus,
     onboardingProgress: user.onboarding.pct + '%',
+    device: detectDevice(),
+    country: user.onboarding?.details?.country || null,
   });
   analytics.identify(user.mid, {
     activationStatus: user.activationStatus,
@@ -1315,6 +1523,8 @@ function loadDashboard() {
     trustScore: user.trustScore,
     onboardingProgress: user.onboarding.pct + '%',
     lastLogin: user.lastLogin,
+    device: detectDevice(),
+    country: user.onboarding?.details?.country || null,
   });
 }
 
@@ -1372,6 +1582,7 @@ function renderProfile(user) {
     ['Full Name', (d.firstName||'') + ' ' + (d.lastName||'') || user.name],
     ['Email', user.email],
     ['Contact', d.contact || '—'],
+    ['Country / Location', d.country || '—'],
     ['Enterprise Name', d.enterpriseName || '—'],
     ['Enterprise Address', d.enterpriseAddress || '—'],
     ['Business Type', d.businessType || '—'],
@@ -1467,15 +1678,25 @@ function switchView(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const view = document.getElementById('view-' + name);
   if (view) view.classList.add('active');
-  const titles = { overview: 'Overview', profile: 'My Profile', alert: 'Alert & Support', documents: 'My Documents' };
+  const titles = {
+    overview: 'Overview', profile: 'My Profile',
+    alert: 'Alert & Support', documents: 'My Documents',
+    send: 'Send Payment', transactions: 'Transactions',
+  };
   document.getElementById('view-title').textContent = titles[name] || name;
 
   // Highlight nav
   document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.textContent.toLowerCase().includes(name.toLowerCase())) n.classList.add('active');
+    const txt = n.textContent.toLowerCase();
+    if (name === 'send' && txt.includes('send')) n.classList.add('active');
+    else if (name === 'transactions' && txt.includes('transaction')) n.classList.add('active');
+    else if (!['send','transactions'].includes(name) && txt.includes(name.toLowerCase())) n.classList.add('active');
   });
   closeSidebar();
   analytics.page('Dashboard ' + (titles[name] || name));
+
+  if (name === 'send')         initSendPayment();
+  if (name === 'transactions') renderTransactions();
 }
 
 // ═══════════════════════════════════════
@@ -1701,6 +1922,7 @@ function clearAllForms() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   const btype = document.getElementById('ob-btype'); if (btype) btype.value = '';
+  const ocountry = document.getElementById('ob-country'); if (ocountry) ocountry.value = '';
 
   // Reset progress bars to 0
   const ob1pct = document.getElementById('ob1-pct'); if (ob1pct) ob1pct.textContent = '0%';
@@ -1821,6 +2043,775 @@ window.showPage = function(id) {
     const se = document.getElementById('su-err'); if (se) se.className = 'err-msg';
   }
 };
+
+// ═══════════════════════════════════════════════════════════════
+// DEVICE & GEO DETECTION (background only — never shown in UI)
+// ═══════════════════════════════════════════════════════════════
+function detectDevice() {
+  const ua = navigator.userAgent;
+  if (/tablet|ipad|playbook|silk/i.test(ua)) return 'Tablet';
+  if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return 'Mobile';
+  return 'Desktop';
+}
+
+// ── Location → corridor/method helpers ────────────────────────
+function _locationToCorridor(loc) {
+  const map = { India:'INR-USD', Brazil:'USD-BRL', USA:'USD-INR', UK:'INR-GBP', EU:'INR-EUR' };
+  return map[loc] || 'INR-USD';
+}
+function _locationToMethod(loc) {
+  const map = { India:'UPI', Brazil:'PIX', USA:'Card', UK:'Card', EU:'SOFORT' };
+  return map[loc] || 'Card';
+}
+function _locationToGeo(loc) {
+  const map = { India:'India', Brazil:'Brazil', USA:'US', UK:'EU', EU:'EU' };
+  return map[loc] || 'US';
+}
+
+function getBuyerPersona(user) {
+  if (user._persona) return user._persona;
+  const storedCountry = user.onboarding?.details?.country;
+  if (storedCountry && storedCountry !== 'Other') {
+    const device = detectDevice();
+    return {
+      country: storedCountry,
+      geo: _locationToGeo(storedCountry),
+      device,
+      preferredMethod: _locationToMethod(storedCountry),
+      isMobile: device === 'Mobile',
+    };
+  }
+  const corridor = user._lastCorridor || 'INR-USD';
+  let geo = 'US', country = 'US', method = 'Card';
+  if (corridor.includes('BRL')) { geo = 'Brazil'; country = 'BR'; method = 'PIX'; }
+  else if (corridor.startsWith('INR')) { geo = 'India'; country = 'IN'; method = 'UPI'; }
+  else if (corridor.includes('EUR')) { geo = 'EU'; country = 'EU'; method = 'SOFORT'; }
+  const device = detectDevice();
+  return { country, geo, device, preferredMethod: method, isMobile: device === 'Mobile' };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CORRIDOR / METHOD CONFIGURATION
+// ═══════════════════════════════════════════════════════════════
+const CORRIDORS = {
+  'INR-USD': { sym:'₹', rec:'UPI',    label:'INR → USD', geo:'US',     methods:['UPI','Card','NEFT/IMPS','Wallet'],           dropRate:0.25 },
+  'INR-EUR': { sym:'₹', rec:'SOFORT', label:'INR → EUR', geo:'EU',     methods:['SOFORT','UPI','Card','NEFT/IMPS','Wallet'],  dropRate:0.32 },
+  'INR-BRL': { sym:'₹', rec:'PIX',    label:'INR → BRL', geo:'Brazil', methods:['PIX','UPI','Card','Wallet'],                 dropRate:0.40 },
+  'INR-GBP': { sym:'₹', rec:'Card',   label:'INR → GBP', geo:'EU',     methods:['Card','UPI','NEFT/IMPS','Wallet'],           dropRate:0.28 },
+  'USD-INR': { sym:'$', rec:'UPI',    label:'USD → INR', geo:'India',  methods:['UPI','Card','NEFT/IMPS','Wallet'],           dropRate:0.40 },
+  'USD-BRL': { sym:'$', rec:'PIX',    label:'USD → BRL', geo:'Brazil', methods:['PIX','Card','Wallet'],                       dropRate:0.60 },
+};
+
+const DROP_RATES = {
+  geo:    { Brazil:0.60, India:0.40, US:0.25, EU:0.32 },
+  method: { PIX:0.10, UPI:0.15, Card:0.22, SOFORT:0.25, 'NEFT/IMPS':0.30, Wallet:0.18 },
+  device: { Mobile:0.20, Desktop:0.05, Tablet:0.12 },
+};
+
+const METHOD_META = {
+  'UPI':      { sub:'Instant · Free',             fee:0,     time:'Instant' },
+  'Card':     { sub:'Visa / Mastercard',           fee:0.015, time:'Instant' },
+  'NEFT/IMPS':{ sub:'Bank Transfer',               fee:0.005, time:'2–4 Hours' },
+  'PIX':      { sub:'Brazil Instant Payment',      fee:0,     time:'Instant' },
+  'SOFORT':   { sub:'European Bank Transfer',      fee:0.008, time:'1–2 Days' },
+  'Wallet':   { sub:'Paytm / PhonePe Wallet',      fee:0,     time:'Instant' },
+};
+
+function getPersonalisedMethods(corridorKey, persona) {
+  const cfg = CORRIDORS[corridorKey];
+  const methods = [...cfg.methods];
+  const preferred = persona.preferredMethod;
+  if (preferred && methods.includes(preferred)) {
+    const idx = methods.indexOf(preferred);
+    methods.splice(idx, 1);
+    methods.unshift(preferred);
+  }
+  return methods;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SEND PAYMENT STATE
+// ═══════════════════════════════════════════════════════════════
+let _sp = {
+  corridor: 'INR-USD', amount: '', recipient: '', method: null,
+  checkoutId: null, startedAt: null, fee: 0,
+  stepReachedPayment: false, stepReachedReview: false,
+  persona: null, device: null,
+};
+
+let _spPendingTimer = null;
+
+function _clearPendingTimer() {
+  if (_spPendingTimer) { clearTimeout(_spPendingTimer); _spPendingTimer = null; }
+}
+
+function _startPendingTimer(user) {
+  _clearPendingTimer();
+  _spPendingTimer = setTimeout(() => {
+    if (_sp.checkoutId && !_sp._completed) {
+      const elapsed = Math.round((Date.now() - new Date(_sp.startedAt).getTime()) / 1000);
+      try {
+        analytics.track('Checkout Dropped', {
+          merchantId: user.mid,
+          checkoutId: _sp.checkoutId,
+          corridor: _sp.corridor,
+          corridorLabel: CORRIDORS[_sp.corridor]?.label,
+          amount: Number(_sp.amount) || 0,
+          method: _sp.method,
+          stepWhenDropped: _sp.stepReachedReview ? 'Review' : _sp.stepReachedPayment ? 'Payment Method' : 'Amount/Recipient',
+          status: 'Pending',
+          elapsed_sec: elapsed,
+          geo: _sp.persona?.geo,
+          userLocation: _sp.userLocation,
+          device: _sp.device,
+          dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+          dropRate_method: _sp.method ? DROP_RATES.method[_sp.method] : null,
+          dropRate_device: DROP_RATES.device[_sp.device] || null,
+          timestamp: new Date().toISOString(),
+        });
+      } catch(e) {}
+    }
+  }, 10 * 60 * 1000);
+}
+
+function _trackNavigationDropOff(user) {
+  if (_sp.checkoutId && !_sp._completed && _sp.startedAt) {
+    const elapsed = Math.round((Date.now() - new Date(_sp.startedAt).getTime()) / 1000);
+    try {
+      analytics.track('Checkout Abandoned', {
+        merchantId: user.mid,
+        checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor,
+        corridorLabel: CORRIDORS[_sp.corridor]?.label,
+        amount: Number(_sp.amount) || 0,
+        method: _sp.method,
+        stepWhenAbandoned: _sp.stepReachedReview ? 'Review' : _sp.stepReachedPayment ? 'Payment Method' : 'Amount/Recipient',
+        status: 'Abandoned',
+        elapsed_sec: elapsed,
+        geo: _sp.persona?.geo,
+        userLocation: _sp.userLocation,
+        device: _sp.device,
+        dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+        dropRate_method: _sp.method ? DROP_RATES.method[_sp.method] : null,
+        dropRate_device: DROP_RATES.device[_sp.device] || null,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+    const email = getCurrentUser();
+    const u = getUserData(email);
+    if (u) {
+      u.transactions = u.transactions || [];
+      if (_sp.amount && Number(_sp.amount) > 0) {
+        u.transactions.unshift({
+          id: 'pay_pnd_' + Math.random().toString(36).slice(2,10),
+          recipient: _sp.recipient || '(abandoned)',
+          method: _sp.method || '—',
+          corridor: CORRIDORS[_sp.corridor]?.label || _sp.corridor,
+          amount: Number(_sp.amount),
+          fee: _sp.fee || 0,
+          status: 'Pending',
+          date: new Date().toISOString(),
+          checkoutId: _sp.checkoutId,
+          isPending: true,
+        });
+        saveUserData(email, u);
+      }
+    }
+  }
+}
+
+function _getUserLocation() {
+  const email = getCurrentUser();
+  const user  = email ? getUserData(email) : null;
+  return user?.onboarding?.details?.country || null;
+}
+
+function initSendPayment() {
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  if (user) _trackNavigationDropOff(user);
+
+  const device = detectDevice();
+  const userLoc = user?.onboarding?.details?.country || null;
+  const corridor = (userLoc && userLoc !== 'Other') ? _locationToCorridor(userLoc) : 'INR-USD';
+  _sp = {
+    corridor, amount:'', recipient:'', method: null,
+    checkoutId: 'chk_' + Math.random().toString(36).slice(2,10),
+    startedAt: new Date().toISOString(),
+    fee: 0, stepReachedPayment: false, stepReachedReview: false,
+    _completed: false, device,
+    persona: user ? getBuyerPersona(user) : null,
+    userLocation: userLoc,
+  };
+
+  const corridorEl = document.getElementById('sp-corridor');
+  if (corridorEl) corridorEl.value = corridor;
+  const amtEl = document.getElementById('sp-amount');
+  if (amtEl) amtEl.value = '';
+  const recEl = document.getElementById('sp-recipient');
+  if (recEl) recEl.value = '';
+  const errEl = document.getElementById('sp-err');
+  if (errEl) errEl.className = 'err-msg';
+  const symEl = document.getElementById('sp-currency-label');
+  if (symEl) symEl.textContent = '₹';
+
+  document.getElementById('sp-step-new').style.display = 'block';
+  document.getElementById('sp-step-review').style.display = 'none';
+  document.getElementById('sp-step-success').style.display = 'none';
+
+  renderPersonaBanner();
+  renderMethodCards();
+  showRecommendation();
+
+  if (user) {
+    _startPendingTimer(user);
+    try {
+      analytics.track('Checkout Started', {
+        merchantId: user.mid,
+        checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor,
+        geo: _sp.persona?.geo,
+        country: _sp.persona?.country,
+        userLocation: _sp.userLocation,
+        device: _sp.device,
+        preferredPaymentMethod: _sp.persona?.preferredMethod,
+        isMobileFlow: _sp.device === 'Mobile',
+        locationBasedCorridor: !!(userLoc && userLoc !== 'Other'),
+        dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+        dropRate_device: DROP_RATES.device[_sp.device] || null,
+        timestamp: _sp.startedAt,
+        email: user.email,
+        plan: 'starter',
+        user_type: 'merchant',
+      });
+    } catch(e) {}
+  }
+}
+
+function renderPersonaBanner() {
+  const banner = document.getElementById('sp-persona-banner');
+  if (!banner || !_sp.persona) return;
+  const p = _sp.persona;
+  const isMobile = _sp.device === 'Mobile';
+  const loc = _sp.userLocation;
+  let cls = '', msg = '';
+  if (p.geo === 'Brazil' || loc === 'Brazil') {
+    cls = 'persona-brazil';
+    msg = `🇧🇷 Sending to Brazil — PIX is instant and free. Showing PIX first.`;
+  } else if (p.geo === 'India' || loc === 'India') {
+    cls = 'persona-india';
+    msg = `🇮🇳 India detected — UPI is instant and free. Showing UPI first.`;
+  } else if (loc === 'EU') {
+    cls = 'persona-india';
+    msg = `🇪🇺 Europe detected — SOFORT bank transfer recommended for this corridor.`;
+  } else if (loc === 'UK') {
+    cls = '';
+    msg = `🇬🇧 UK detected — Card payment recommended for this corridor.`;
+  } else if (loc === 'USA') {
+    cls = '';
+    msg = `🇺🇸 United States detected — showing best methods for your corridor.`;
+  } else {
+    banner.style.display = 'none';
+    return;
+  }
+  if (isMobile) msg += ` 📱 Simplified mobile checkout active.`;
+  banner.className = cls;
+  banner.style.display = 'block';
+  banner.style.padding = '12px 16px';
+  banner.style.borderRadius = '10px';
+  banner.style.fontSize = '13px';
+  banner.style.border = '1px solid';
+  banner.textContent = msg;
+}
+
+function showRecommendation() {
+  const cfg = CORRIDORS[_sp.corridor];
+  const rec = document.getElementById('sp-recommendation');
+  const txt = document.getElementById('sp-rec-text');
+  if (!rec || !txt || !cfg) return;
+  const preferred = _sp.persona?.preferredMethod || cfg.rec;
+  txt.textContent = `Recommended for ${cfg.label}: ${preferred} — fastest & lowest fee for this corridor.`;
+  rec.style.display = 'block';
+}
+
+function renderMethodCards() {
+  const cfg = CORRIDORS[_sp.corridor];
+  const grid = document.getElementById('sp-methods-grid');
+  if (!grid || !cfg) return;
+  const isMobile = _sp.device === 'Mobile';
+  const methods = _sp.persona ? getPersonalisedMethods(_sp.corridor, _sp.persona) : cfg.methods;
+  const preferred = _sp.persona?.preferredMethod || cfg.rec;
+  const displayMethods = isMobile ? methods.slice(0, 2) : methods;
+
+  grid.innerHTML = displayMethods.map((m, idx) => {
+    const meta = METHOD_META[m] || { sub:'', fee:0, time:'—' };
+    const isFirst = idx === 0 && m === preferred;
+    const isRec   = m === cfg.rec;
+    const isSel   = m === _sp.method;
+    return `
+      <div class="pay-method-card ${isSel ? 'selected' : ''} ${isFirst ? 'featured-first' : isRec && !isSel ? 'recommended' : ''}"
+           onclick="selectMethod('${m}')">
+        <div class="pm-info">
+          <div class="pm-name">${m}</div>
+          <div class="pm-sub">${meta.sub}</div>
+          <div>
+            ${isFirst ? `<span class="pm-badge-first">⭐ First for you</span>` : ''}
+            ${isSel ? `<span class="pm-badge-preferred">✓ Selected</span>` : ''}
+            ${isRec && !isFirst && !isSel ? `<span class="pm-badge-rec">⚡ Recommended</span>` : ''}
+            ${meta.time !== 'Instant' ? `<span class="pm-badge-slow">🕐 ${meta.time}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  if (isMobile && methods.length > 2) {
+    grid.insertAdjacentHTML('beforeend', `
+      <div style="grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px 0;">
+        📱 Simplified mobile flow — ${methods.length - 2} more methods available on desktop
+      </div>`);
+  }
+}
+
+function selectMethod(m) {
+  _sp.method = m;
+  _sp.stepReachedPayment = true;
+  renderMethodCards();
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  const cfg   = CORRIDORS[_sp.corridor];
+  const meta  = METHOD_META[m] || {};
+  if (!user) return;
+  try {
+    analytics.track('Payment Method Selected', {
+      merchantId: user.mid,
+      checkoutId: _sp.checkoutId,
+      corridor: _sp.corridor,
+      corridorLabel: cfg?.label,
+      method: m,
+      isPreferredForCorridor: m === cfg?.rec,
+      isPersonalisedFirst: _sp.persona?.preferredMethod === m,
+      preferredForCorridor: cfg?.rec,
+      preferredForBuyer: _sp.persona?.preferredMethod,
+      userLocation: _sp.userLocation,
+      fee: meta.fee || 0,
+      estimatedTime: meta.time,
+      geo: _sp.persona?.geo,
+      device: _sp.device,
+      dropRate_method: DROP_RATES.method[m] || null,
+      dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+      dropRate_device: DROP_RATES.device[_sp.device] || null,
+      timestamp: new Date().toISOString(),
+    });
+  } catch(e) {}
+}
+
+function onCorridorChange() {
+  const val = document.getElementById('sp-corridor').value;
+  _sp.corridor = val;
+  const cfg = CORRIDORS[val];
+  const symEl = document.getElementById('sp-currency-label');
+  if (symEl && cfg) symEl.textContent = cfg.sym;
+  if (_sp.persona) {
+    _sp.persona.geo = cfg.geo;
+    if (cfg.geo === 'Brazil') { _sp.persona.preferredMethod = 'PIX'; _sp.persona.country = 'BR'; }
+    else if (cfg.geo === 'India') { _sp.persona.preferredMethod = 'UPI'; _sp.persona.country = 'IN'; }
+    else if (cfg.geo === 'US') { _sp.persona.preferredMethod = 'Card'; _sp.persona.country = 'US'; }
+    else { _sp.persona.preferredMethod = cfg.rec; }
+  }
+  _sp.method = null;
+  renderPersonaBanner();
+  renderMethodCards();
+  showRecommendation();
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  if (user) {
+    user._lastCorridor = val;
+    saveUserData(email, user);
+    try {
+      analytics.track('Corridor Selected', {
+        merchantId: user.mid,
+        checkoutId: _sp.checkoutId,
+        corridor: val,
+        corridorLabel: cfg?.label,
+        geo: cfg?.geo,
+        recommendedMethod: cfg?.rec,
+        personalisedMethod: _sp.persona?.preferredMethod,
+        dropRate_geo: DROP_RATES.geo[cfg?.geo] || null,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
+
+function onAmountInput() {
+  _sp.amount = document.getElementById('sp-amount')?.value || '';
+}
+function onRecipientInput() {
+  _sp.recipient = document.getElementById('sp-recipient')?.value || '';
+}
+
+function spGoReview() {
+  const amount    = document.getElementById('sp-amount').value.trim();
+  const recipient = document.getElementById('sp-recipient').value.trim();
+  const errEl     = document.getElementById('sp-err');
+  errEl.className = 'err-msg';
+  if (!amount || isNaN(amount) || Number(amount) <= 0) { showErr(errEl,'Please enter a valid amount.'); return; }
+  if (!recipient) { showErr(errEl,'Please enter a recipient name.'); return; }
+  if (!_sp.method) { showErr(errEl,'Please select a payment method.'); return; }
+  _sp.amount = amount;
+  _sp.recipient = recipient;
+  _sp.stepReachedReview = true;
+
+  const cfg  = CORRIDORS[_sp.corridor];
+  const meta = METHOD_META[_sp.method] || { fee:0, time:'—' };
+  const fee  = Math.round(Number(amount) * meta.fee);
+  _sp.fee = fee;
+
+  const personalisedFirst = _sp.persona?.preferredMethod === _sp.method;
+  const rows = [
+    ['Corridor',       cfg?.label || _sp.corridor],
+    ['Amount',         (cfg?.sym||'₹') + Number(amount).toLocaleString('en-IN')],
+    ['Recipient',      recipient],
+    ['Payment Method', _sp.method + (personalisedFirst ? ' ⭐ (personalised first)' : '')],
+    ['Est. Fee',       fee > 0 ? `${cfg?.sym||'₹'}${fee.toLocaleString('en-IN')}` : 'Free'],
+    ['Est. Arrival',   meta.time],
+    ['Geo Drop-off',   DROP_RATES.geo[_sp.persona?.geo] ? (DROP_RATES.geo[_sp.persona.geo]*100)+'%' : '—'],
+    ['Method Drop-off',DROP_RATES.method[_sp.method] ? (DROP_RATES.method[_sp.method]*100)+'%' : '—'],
+    ['Device Drop-off',DROP_RATES.device[_sp.device] ? (DROP_RATES.device[_sp.device]*100)+'%' : '—'],
+  ];
+
+  document.getElementById('sp-review-rows').innerHTML = rows.map(([k,v]) => `
+    <div class="review-row">
+      <span class="rr-key">${k}</span>
+      <span class="rr-val" style="${k==='Est. Fee' && fee===0 ? 'color:var(--success)' : ''}">${v}</span>
+    </div>`).join('');
+
+  document.getElementById('sp-step-new').style.display    = 'none';
+  document.getElementById('sp-step-review').style.display = 'block';
+  document.getElementById('sp-step-success').style.display = 'none';
+
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  if (user) {
+    const elapsed = Math.round((Date.now() - new Date(_sp.startedAt).getTime()) / 1000);
+    try {
+      analytics.track('Checkout Review Reached', {
+        merchantId: user.mid,
+        checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor,
+        corridorLabel: cfg?.label,
+        amount: Number(amount),
+        method: _sp.method,
+        isPreferredMethod: _sp.method === cfg?.rec,
+        isPersonalisedFirst: personalisedFirst,
+        estimatedFee: fee,
+        geo: _sp.persona?.geo,
+        device: _sp.device,
+        dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+        dropRate_method: DROP_RATES.method[_sp.method] || null,
+        dropRate_device: DROP_RATES.device[_sp.device] || null,
+        elapsed_sec: elapsed,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
+
+function spBack() {
+  document.getElementById('sp-step-new').style.display    = 'block';
+  document.getElementById('sp-step-review').style.display = 'none';
+  document.getElementById('sp-step-success').style.display = 'none';
+  const email = getCurrentUser(); const user = getUserData(email);
+  if (user) {
+    try {
+      analytics.track('Checkout Edit Clicked', {
+        merchantId: user.mid, checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor, method: _sp.method, timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
+
+function spConfirm() {
+  const cfg    = CORRIDORS[_sp.corridor];
+  const meta   = METHOD_META[_sp.method] || { time:'—' };
+  const amount = Number(_sp.amount);
+  const fee    = _sp.fee;
+  const elapsed = Math.round((Date.now() - new Date(_sp.startedAt).getTime()) / 1000);
+  const txnId  = 'pay_' + Math.random().toString(36).slice(2,12);
+  const now    = new Date();
+
+  const rand = Math.random();
+  let status = 'Success';
+  if (rand > 0.88) status = 'Failed';
+
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  const personalisedFirst = _sp.persona?.preferredMethod === _sp.method;
+
+  _clearPendingTimer();
+
+  if (status === 'Failed') {
+    if (user) {
+      try {
+        analytics.track('Payment Auth Failed', {
+          merchantId: user.mid, checkoutId: _sp.checkoutId, transactionId: txnId,
+          corridor: _sp.corridor, corridorLabel: cfg?.label, amount,
+          method: _sp.method, reason: 'auth_declined',
+          geo: _sp.persona?.geo, device: _sp.device,
+          dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+          dropRate_method: DROP_RATES.method[_sp.method] || null,
+          dropRate_device: DROP_RATES.device[_sp.device] || null,
+          elapsed_sec: elapsed, timestamp: now.toISOString(),
+        });
+      } catch(e) {}
+      user.transactions = user.transactions || [];
+      user.transactions.unshift({
+        id: txnId, recipient: _sp.recipient, method: _sp.method,
+        corridor: cfg?.label || _sp.corridor, amount, fee, status: 'Failed',
+        date: now.toISOString(), checkoutId: _sp.checkoutId,
+      });
+      saveUserData(email, user);
+    }
+    showToast('Payment authentication failed. Please try again.', 'danger');
+    spBack();
+    return;
+  }
+
+  _sp._completed = true;
+
+  if (user) {
+    user.transactions = user.transactions || [];
+    user.transactions.unshift({
+      id: txnId, recipient: _sp.recipient, method: _sp.method,
+      corridor: cfg?.label || _sp.corridor, amount, fee, status: 'Success',
+      date: now.toISOString(), checkoutId: _sp.checkoutId,
+    });
+    saveUserData(email, user);
+  }
+
+  document.getElementById('sp-step-new').style.display     = 'none';
+  document.getElementById('sp-step-review').style.display  = 'none';
+  document.getElementById('sp-step-success').style.display = 'block';
+
+  document.getElementById('sp-success-msg').textContent =
+    `${cfg?.sym||'₹'}${amount.toLocaleString('en-IN')} → ${_sp.recipient} via ${_sp.method}. Est. arrival: ${meta.time}.`;
+
+  document.getElementById('sp-success-detail').innerHTML = `
+    <div class="review-row"><span class="rr-key">Transaction ID</span><span class="rr-val" style="font-family:monospace;font-size:12px;">${txnId}</span></div>
+    <div class="review-row"><span class="rr-key">Amount</span><span class="rr-val">${cfg?.sym||'₹'}${amount.toLocaleString('en-IN')}</span></div>
+    <div class="review-row"><span class="rr-key">Fee</span><span class="rr-val" style="${fee===0?'color:var(--success)':''}">${fee===0?'Free':(cfg?.sym||'₹')+fee}</span></div>
+    <div class="review-row"><span class="rr-key">Status</span><span class="rr-val" style="color:var(--success);">✓ Success</span></div>
+    <div class="review-row"><span class="rr-key">Estimated Arrival</span><span class="rr-val">${meta.time}</span></div>`;
+
+  if (user) {
+    try {
+      analytics.track('Checkout Completed', {
+        merchantId: user.mid, checkoutId: _sp.checkoutId, transactionId: txnId,
+        corridor: _sp.corridor, corridorLabel: cfg?.label,
+        amount, fee, method: _sp.method, status: 'success',
+        is_preferred_method: _sp.method === cfg?.rec,
+        is_personalised_first: personalisedFirst,
+        preferred_for_corridor: cfg?.rec,
+        preferred_for_buyer: _sp.persona?.preferredMethod,
+        recipient: _sp.recipient,
+        geo: _sp.persona?.geo, country: _sp.persona?.country,
+        userLocation: _sp.userLocation,
+        device: _sp.device,
+        isMobileFlow: _sp.device === 'Mobile',
+        dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+        dropRate_method: DROP_RATES.method[_sp.method] || null,
+        dropRate_device: DROP_RATES.device[_sp.device] || null,
+        time_to_complete_sec: elapsed, timestamp: now.toISOString(),
+      });
+      analytics.track('Transaction Completed', {
+        merchantId: user.mid, transactionId: txnId, status: 'Success',
+        amount, fee, method: _sp.method, corridor: _sp.corridor,
+        geo: _sp.persona?.geo, userLocation: _sp.userLocation,
+        device: _sp.device, timestamp: now.toISOString(),
+      });
+      analytics.identify(user.mid, {
+        lastTransactionAt: now.toISOString(),
+        preferredPaymentMethod: _sp.method,
+        preferredCorridor: _sp.corridor,
+      });
+    } catch(e) {}
+  }
+  showToast('Payment sent successfully! ✅', 'success');
+  renderTransactions();
+}
+
+function spReset() {
+  document.getElementById('sp-step-new').style.display     = 'block';
+  document.getElementById('sp-step-review').style.display  = 'none';
+  document.getElementById('sp-step-success').style.display = 'none';
+  initSendPayment();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRUE BROWSER ABANDONMENT — fires when tab is closed or hidden
+// All analytics calls are silent; nothing is shown in the UI.
+// ═══════════════════════════════════════════════════════════════
+(function registerBrowserAbandonTracking() {
+  function _fireAbandon(trigger) {
+    if (!_sp.checkoutId || _sp._completed || !_sp.startedAt) return;
+    const email = getCurrentUser();
+    const user  = email ? getUserData(email) : null;
+    if (!user) return;
+    const elapsed = Math.round((Date.now() - new Date(_sp.startedAt).getTime()) / 1000);
+    _clearPendingTimer();
+    try {
+      analytics.track('Checkout Abandoned', {
+        merchantId: user.mid,
+        checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor,
+        corridorLabel: CORRIDORS[_sp.corridor]?.label,
+        amount: Number(_sp.amount) || 0,
+        method: _sp.method,
+        stepWhenAbandoned: _sp.stepReachedReview ? 'Review' : _sp.stepReachedPayment ? 'Payment Method' : 'Amount/Recipient',
+        status: 'Abandoned',
+        trigger,
+        elapsed_sec: elapsed,
+        geo: _sp.persona?.geo,
+        userLocation: _sp.userLocation,
+        device: _sp.device,
+        dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
+        dropRate_method: _sp.method ? DROP_RATES.method[_sp.method] : null,
+        dropRate_device: DROP_RATES.device[_sp.device] || null,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+    if (user && _sp.amount && Number(_sp.amount) > 0) {
+      user.transactions = user.transactions || [];
+      user.transactions.unshift({
+        id: 'pay_pnd_' + Math.random().toString(36).slice(2,10),
+        recipient: _sp.recipient || '(abandoned)',
+        method: _sp.method || '—',
+        corridor: CORRIDORS[_sp.corridor]?.label || _sp.corridor,
+        amount: Number(_sp.amount),
+        fee: _sp.fee || 0,
+        status: 'Pending',
+        date: new Date().toISOString(),
+        checkoutId: _sp.checkoutId,
+        isPending: true,
+      });
+      try { saveUserData(email, user); } catch(e) {}
+    }
+    _sp.checkoutId = null;
+  }
+
+  window.addEventListener('beforeunload', () => _fireAbandon('tab_closed'));
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') _fireAbandon('tab_hidden');
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSACTIONS VIEW
+// ═══════════════════════════════════════════════════════════════
+function seedTransactions(user) {
+  if (user.transactions && user.transactions.length > 0) return;
+  user.transactions = [
+    { id:'pay_kx8fHrJwL9', recipient:'Shopkart Order #4821',   method:'UPI',       corridor:'INR → USD', amount:4200,  fee:0,   status:'Success',  date: new Date(Date.now()-3600000).toISOString() },
+    { id:'pay_Mn3kPq7vR1', recipient:'Vendor Payout — LogiCo', method:'NEFT/IMPS', corridor:'INR → EUR', amount:18500, fee:92,  status:'Success',  date: new Date(Date.now()-7200000).toISOString() },
+    { id:'pay_Ra9sLt4cN6', recipient:'Card Payment — John D.',  method:'Card',      corridor:'USD → INR', amount:1800,  fee:27,  status:'Pending',  date: new Date(Date.now()-9000000).toISOString() },
+    { id:'rFnd_Yx2bFm8k5', recipient:'Refund — Order #4710',   method:'UPI',       corridor:'INR → USD', amount:-950,  fee:0,   status:'Refunded', date: new Date(Date.now()-86400000).toISOString() },
+    { id:'pay_Zc1mNv5pX2', recipient:'Global Freight Ltd',     method:'SOFORT',    corridor:'INR → EUR', amount:32000, fee:256, status:'Success',  date: new Date(Date.now()-172800000).toISOString() },
+    { id:'pay_Qw7tKr9eB3', recipient:'Raj Pharma Exports',     method:'PIX',       corridor:'USD → BRL', amount:8750,  fee:0,   status:'Failed',   date: new Date(Date.now()-259200000).toISOString() },
+    { id:'pay_pnd_demo01', recipient:'TechVend Solutions',     method:'Card',      corridor:'INR → GBP', amount:5500,  fee:82,  status:'Pending',  date: new Date(Date.now()-1800000).toISOString(), isPending:true },
+  ];
+}
+
+function renderTransactions() {
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  if (!user) return;
+  seedTransactions(user);
+  saveUserData(email, user);
+
+  const statusFilter = document.getElementById('txn-filter-status')?.value || '';
+  const methodFilter = document.getElementById('txn-filter-method')?.value || '';
+
+  let txns = [...(user.transactions || [])];
+  if (statusFilter) txns = txns.filter(t => t.status === statusFilter);
+  if (methodFilter) txns = txns.filter(t => t.method === methodFilter);
+
+  const all        = user.transactions || [];
+  const totalVol   = all.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0);
+  const successPct = all.length ? Math.round(all.filter(t=>t.status==='Success').length/all.length*100) : 0;
+  const totalFees  = all.reduce((s,t)=>s+(t.fee||0),0);
+  const settle     = all.filter(t=>t.status==='Success'&&t.amount>0).reduce((s,t)=>s+t.amount-(t.fee||0),0);
+  const pendingCnt = all.filter(t=>t.status==='Pending').length;
+  const failedCnt  = all.filter(t=>t.status==='Failed').length;
+
+  document.getElementById('txn-kpi-row').innerHTML = [
+    { label:'GMV Today',      val:'₹'+totalVol.toLocaleString('en-IN'), sub:all.length+' transactions',  color:'var(--accent)' },
+    { label:'Success Rate',   val:successPct+'%',                        sub:'Successful payments',       color:'var(--success)' },
+    { label:'Pending',        val:pendingCnt,                            sub:'Awaiting completion',       color:'var(--warning)' },
+    { label:'Failed',         val:failedCnt,                             sub:'Auth / network errors',     color:'var(--danger)' },
+    { label:'Net Settlement', val:'₹'+settle.toLocaleString('en-IN'),    sub:'Tomorrow, 9:00 AM',         color:'var(--accent2)' },
+  ].map(k=>`
+    <div class="kpi-card" style="--accent-c:${k.color}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-val" style="color:${k.color}">${k.val}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  const statusColor = { Success:'var(--success)',Pending:'var(--warning)',Failed:'var(--danger)',Refunded:'var(--accent2)' };
+  const statusBg    = { Success:'rgba(16,185,129,.12)',Pending:'rgba(245,158,11,.12)',Failed:'rgba(239,68,68,.12)',Refunded:'rgba(59,130,246,.12)' };
+  const statusIcon  = { Success:'✓',Pending:'⏳',Failed:'✕',Refunded:'↩' };
+
+  document.getElementById('txn-tbody').innerHTML = txns.length ? txns.map(t => `
+    <tr>
+      <td style="padding:12px 16px;">
+        <div style="font-weight:600;font-size:13px;">${t.recipient}</div>
+        <div class="txn-id">${t.id}</div>
+        ${t.isPending ? `<div style="font-size:11px;color:var(--warning);margin-top:2px;">⏳ Left during payment</div>` : ''}
+      </td>
+      <td style="padding:12px 16px;color:var(--muted);font-size:13px;">${(t.recipient||'').split(' ')[0]}</td>
+      <td style="padding:12px 16px;"><span style="font-size:13px;font-weight:500;">${t.method||'—'}</span></td>
+      <td style="padding:12px 16px;font-size:12px;color:var(--muted);">${t.corridor||'—'}</td>
+      <td style="padding:12px 16px;text-align:right;font-weight:600;font-size:14px;color:${t.amount<0?'var(--danger)':'var(--text)'};">
+        ${t.amount<0?'-':''}₹${Math.abs(t.amount||0).toLocaleString('en-IN')}
+      </td>
+      <td style="padding:12px 16px;text-align:right;font-size:13px;color:${(t.fee||0)===0?'var(--success)':'var(--muted)'};">
+        ${(t.fee||0)===0?'Free':'₹'+(t.fee||0)}
+      </td>
+      <td style="padding:12px 16px;">
+        <span style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${statusBg[t.status]||''};color:${statusColor[t.status]||'var(--muted)'};">
+          ${statusIcon[t.status]||''} ${t.status}
+        </span>
+      </td>
+      <td style="padding:12px 16px;font-size:12px;color:var(--muted);">${new Date(t.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
+    </tr>`).join('') : `
+    <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);font-size:14px;">No transactions found.</td></tr>`;
+
+  if (user) {
+    try {
+      analytics.track('Transactions Page Viewed', {
+        merchantId: user.mid,
+        totalTransactions: all.length,
+        successCount: all.filter(t=>t.status==='Success').length,
+        pendingCount: pendingCnt,
+        failedCount: failedCnt,
+        refundedCount: all.filter(t=>t.status==='Refunded').length,
+        totalVolume: totalVol,
+        filteredBy: { status: statusFilter, method: methodFilter },
+        dropRates: {
+          geo_brazil: DROP_RATES.geo.Brazil,
+          geo_india:  DROP_RATES.geo.India,
+          geo_us:     DROP_RATES.geo.US,
+          method_pix: DROP_RATES.method.PIX,
+          method_upi: DROP_RATES.method.UPI,
+          device_mobile:  DROP_RATES.device.Mobile,
+          device_desktop: DROP_RATES.device.Desktop,
+        },
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send Payment — CRUDPAY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="./payment.css" />
+
+  <!-- Segment Analytics -->
+  <script>
+    !function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics._writeKey="A6OwrhlAmXxkxkwm3Vnnizkmy18shHkI";analytics._cdn="https://cdn.segment.com";analytics.SNIPPET_VERSION="5.2.1";
+    analytics.load("A6OwrhlAmXxkxkwm3Vnnizkmy18shHkI");
+    }}();
+  </script>
+</head>
+<body>
+
+<div class="pay-wrap">
+
+  <!-- TOP BAR -->
+  <div class="pay-topbar">
+    <div class="brand">
+      <div class="brand-icon">CP</div>
+      <span class="brand-name">CRUDPAY</span>
+    </div>
+    <div class="topbar-sep"></div>
+    <span class="topbar-page-title">Send Payment</span>
+    <div class="topbar-right">
+      <div class="user-pill" id="topbar-user" style="display:none">
+        <div class="user-avatar" id="topbar-avatar">—</div>
+        <span class="user-name" id="topbar-name">—</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="goBack()">← Dashboard</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="pay-content">
+
+    <!-- Step indicator -->
+    <div class="step-indicator" id="step-indicator">
+      <div class="si-step">
+        <div class="si-dot active" id="dot-1">1</div>
+        <span class="si-label active" id="lbl-1">Details &amp; Method</span>
+      </div>
+      <div class="si-line" id="line-1"></div>
+      <div class="si-step">
+        <div class="si-dot" id="dot-2">2</div>
+        <span class="si-label" id="lbl-2">Review</span>
+      </div>
+      <div class="si-line" id="line-2"></div>
+      <div class="si-step">
+        <div class="si-dot" id="dot-3">✓</div>
+        <span class="si-label" id="lbl-3">Result</span>
+      </div>
+    </div>
+
+    <!-- ── STEP 1: DETAILS + METHOD ── -->
+    <div id="step-details" class="pay-card slide-in">
+      <div class="card-title">Payment Details</div>
+      <div class="card-sub" id="step1-sub">Choose your corridor, enter the amount and recipient, then select a payment method.</div>
+
+      <!-- Standalone notice (shown when no session data) -->
+      <div class="standalone-notice" id="standalone-notice" style="display:none">
+        ℹ️ Open this page from the CRUDPAY dashboard ("Send Payment") to pre-fill your account details.
+        <a href="index.html" style="color:var(--accent2);text-decoration:none;font-weight:600;margin-left:4px">← Return to Dashboard</a>
+      </div>
+
+      <!-- Persona banner (personalization, shown for Brazil/India/Mobile) -->
+      <div class="persona-banner" id="persona-banner"></div>
+
+      <!-- Corridor selection -->
+      <div class="field">
+        <label>Corridor</label>
+        <select id="corridor-select">
+          <option value="INR-USD">INR → USD (India to United States)</option>
+          <option value="INR-EUR">INR → EUR (India to Europe)</option>
+          <option value="INR-BRL">INR → BRL (India to Brazil)</option>
+          <option value="INR-GBP">INR → GBP (India to United Kingdom)</option>
+          <option value="USD-INR">USD → INR (United States to India)</option>
+          <option value="USD-BRL">USD → BRL (United States to Brazil)</option>
+        </select>
+      </div>
+
+      <div class="field-row">
+        <!-- Amount -->
+        <div class="field">
+          <label>Amount</label>
+          <div class="amount-wrap">
+            <span class="amount-sym" id="amount-sym">₹</span>
+            <input type="number" id="amount-input" placeholder="1000" min="1" step="any" />
+          </div>
+        </div>
+        <!-- Recipient name -->
+        <div class="field">
+          <label>Recipient Name</label>
+          <input type="text" id="recipient-name" placeholder="Jane Smith" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Recipient account / email -->
+      <div class="field">
+        <label>Recipient Email or Account</label>
+        <input type="text" id="recipient-account" placeholder="jane@example.com" autocomplete="off" />
+      </div>
+
+      <div class="err-msg" id="details-err">Please fill in all required fields.</div>
+
+      <div class="divider"></div>
+
+      <!-- Payment method selection -->
+      <div class="section-label">
+        <span>⚡</span>
+        <span>Payment Method</span>
+        <span id="corridor-note" style="font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
+      </div>
+
+      <!-- Recommendation banner -->
+      <div class="rec-banner" id="rec-banner" style="display:none">
+        ✦ <span id="rec-banner-text"></span>
+      </div>
+
+      <div class="methods-grid" id="methods-grid">
+        <!-- Filled dynamically by payment.js -->
+      </div>
+
+      <div class="err-msg" id="method-err">Please select a payment method to continue.</div>
+
+      <div class="secure-row">🔒 Secured by CRUDPAY — 256-bit TLS</div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goBack()">← Cancel</button>
+        <button class="btn btn-primary" onclick="spGoReview()" id="btn-review">
+          Review Payment →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: REVIEW ── -->
+    <div id="step-review" class="pay-card slide-in" style="display:none">
+      <div class="card-title">Review Payment</div>
+      <div class="card-sub">Please confirm the details before sending.</div>
+
+      <div class="review-rows" id="review-rows">
+        <!-- Filled dynamically -->
+      </div>
+
+      <div class="secure-row">🔒 Payments are encrypted and processed securely</div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="spBack()">← Back</button>
+        <button class="btn btn-primary" onclick="spConfirm()" id="btn-confirm">
+          Confirm &amp; Send
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: RESULT ── -->
+    <div id="step-result" class="pay-card slide-in" style="display:none">
+      <div class="result-wrap">
+        <div class="result-icon" id="result-icon">⏳</div>
+        <div class="result-title" id="result-title">Processing…</div>
+        <div class="result-sub" id="result-sub">Please wait while we process your payment.</div>
+
+        <div class="result-txn-box" id="result-txn-box" style="display:none">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Transaction ID</div>
+          <div class="result-txn-id" id="result-txn-id"></div>
+        </div>
+
+        <div class="result-actions" id="result-actions" style="display:none">
+          <button class="btn btn-primary btn-full" onclick="goBack()">← Back to Dashboard</button>
+          <button class="btn btn-secondary btn-full" onclick="sendAnother()">Send Another Payment</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.pay-content -->
+</div><!-- /.pay-wrap -->
+
+<!-- Toast container -->
+<div class="toast" id="toast"></div>
+
+<script type="module" src="./payment.js"></script>
+</body>
+</html>
