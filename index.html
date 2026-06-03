@@ -463,6 +463,26 @@
 <!-- OVERLAY -->
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
+<!-- PAYMENT PASSWORD MODAL -->
+<div id="pay-pwd-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div>
+    <div style="font-size:36px;text-align:center;margin-bottom:12px;">🔐</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:20px;text-align:center;margin-bottom:6px;">Authorise Payment</div>
+    <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;">Enter your account password to confirm this transaction</div>
+    <div class="field" style="margin-bottom:8px;">
+      <label>Account Password</label>
+      <input type="password" id="pay-pwd-input" placeholder="Your account password" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')submitPaymentPassword()" />
+    </div>
+    <div class="err-msg" id="pay-pwd-err" style="margin-bottom:16px;"></div>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closePaymentPasswordModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="submitPaymentPassword()">Authorise &amp; Send →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════
      PAGE 1: SIGNUP
 ══════════════════════════════════════════ -->
@@ -910,7 +930,7 @@
               </div>
               <div style="display:flex;gap:12px;">
                 <button class="btn btn-secondary" style="flex:1;" onclick="spBack()">← Edit</button>
-                <button class="btn btn-primary" style="flex:2;" onclick="spConfirm()">Confirm &amp; Send →</button>
+                <button class="btn btn-primary" style="flex:2;" onclick="openPaymentPasswordModal()">Confirm &amp; Send →</button>
               </div>
             </div>
           </div>
@@ -2025,6 +2045,29 @@ function updateClock() {
 
   // When navigating to onboard pages, always populate forms
   document.getElementById('page-onboard1').addEventListener('transitionend', populateOnboardingForm);
+
+  // Silent device identify on every page load
+  try {
+    const _dev = detectDevice();
+    analytics.track('Device Detected', {
+      device: _dev,
+      isMobile: _dev === 'Mobile',
+      isDesktop: _dev === 'Desktop',
+      isTablet: _dev === 'Tablet',
+      userAgent: navigator.userAgent.slice(0, 120),
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
+      timestamp: new Date().toISOString(),
+    });
+    if (email && getUserData(email)) {
+      const _u = getUserData(email);
+      analytics.identify(_u.mid, {
+        device: _dev,
+        isMobile: _dev === 'Mobile',
+        screenWidth: window.innerWidth,
+      });
+    }
+  } catch(e) {}
 })();
 
 // Intercept onboarding page shown
@@ -2260,12 +2303,15 @@ function initSendPayment() {
   document.getElementById('sp-step-success').style.display = 'none';
 
   renderPersonaBanner();
-  renderMethodCards();
+  renderMethodCards(true);
   showRecommendation();
 
   if (user) {
     _startPendingTimer(user);
     try {
+      const _firstMethod = _sp.persona
+        ? getPersonalisedMethods(_sp.corridor, _sp.persona)[0]
+        : CORRIDORS[_sp.corridor]?.methods[0];
       analytics.track('Checkout Started', {
         merchantId: user.mid,
         checkoutId: _sp.checkoutId,
@@ -2275,7 +2321,9 @@ function initSendPayment() {
         userLocation: _sp.userLocation,
         device: _sp.device,
         preferredPaymentMethod: _sp.persona?.preferredMethod,
+        recommendedMethodShown: _firstMethod || null,
         isMobileFlow: _sp.device === 'Mobile',
+        mobileSimplified: _sp.device === 'Mobile',
         locationBasedCorridor: !!(userLoc && userLoc !== 'Other'),
         dropRate_geo: DROP_RATES.geo[_sp.persona?.geo] || null,
         dropRate_device: DROP_RATES.device[_sp.device] || null,
@@ -2334,7 +2382,7 @@ function showRecommendation() {
   rec.style.display = 'block';
 }
 
-function renderMethodCards() {
+function renderMethodCards(isInit) {
   const cfg = CORRIDORS[_sp.corridor];
   const grid = document.getElementById('sp-methods-grid');
   if (!grid || !cfg) return;
@@ -2342,6 +2390,37 @@ function renderMethodCards() {
   const methods = _sp.persona ? getPersonalisedMethods(_sp.corridor, _sp.persona) : cfg.methods;
   const preferred = _sp.persona?.preferredMethod || cfg.rec;
   const displayMethods = isMobile ? methods.slice(0, 2) : methods;
+
+  if (isInit) {
+    const email = getCurrentUser(); const user = getUserData(email);
+    if (user) {
+      try {
+        if (isMobile) {
+          analytics.track('Mobile Simplified Checkout Active', {
+            merchantId: user.mid, checkoutId: _sp.checkoutId,
+            corridor: _sp.corridor, device: _sp.device,
+            methodsShown: displayMethods.length,
+            methodsHidden: methods.length - displayMethods.length,
+            firstMethodShown: displayMethods[0] || null,
+            userLocation: _sp.userLocation,
+            timestamp: new Date().toISOString(),
+          });
+        }
+        analytics.track('Payment Methods Rendered', {
+          merchantId: user.mid, checkoutId: _sp.checkoutId,
+          corridor: _sp.corridor, device: _sp.device,
+          isMobileSimplified: isMobile,
+          firstMethodShown: displayMethods[0] || null,
+          recommendedMethodShown: preferred,
+          isRecommendedFirst: displayMethods[0] === preferred,
+          totalMethodsAvailable: methods.length,
+          totalMethodsDisplayed: displayMethods.length,
+          userLocation: _sp.userLocation,
+          timestamp: new Date().toISOString(),
+        });
+      } catch(e) {}
+    }
+  }
 
   grid.innerHTML = displayMethods.map((m, idx) => {
     const meta = METHOD_META[m] || { sub:'', fee:0, time:'—' };
@@ -2420,7 +2499,7 @@ function onCorridorChange() {
   }
   _sp.method = null;
   renderPersonaBanner();
-  renderMethodCards();
+  renderMethodCards(false);
   showRecommendation();
   const email = getCurrentUser();
   const user  = getUserData(email);
@@ -2646,6 +2725,122 @@ function spReset() {
   document.getElementById('sp-step-review').style.display  = 'none';
   document.getElementById('sp-step-success').style.display = 'none';
   initSendPayment();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAYMENT PASSWORD MODAL — authorise before confirm
+// Silent Segment tracking; nothing shown to user about analytics.
+// ═══════════════════════════════════════════════════════════════
+let _pwdFailCount = 0;
+
+function openPaymentPasswordModal() {
+  const overlay = document.getElementById('pay-pwd-overlay');
+  overlay.style.display = 'flex';
+  const inp = document.getElementById('pay-pwd-input');
+  inp.value = '';
+  document.getElementById('pay-pwd-err').className = 'err-msg';
+  _pwdFailCount = 0;
+  setTimeout(() => inp.focus(), 80);
+
+  const email = getCurrentUser(); const user = getUserData(email);
+  if (user) {
+    try {
+      analytics.track('Payment Auth Modal Opened', {
+        merchantId: user.mid, checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor, amount: Number(_sp.amount) || 0,
+        method: _sp.method, device: _sp.device,
+        userLocation: _sp.userLocation,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
+
+function closePaymentPasswordModal() {
+  document.getElementById('pay-pwd-overlay').style.display = 'none';
+  document.getElementById('pay-pwd-input').value = '';
+  document.getElementById('pay-pwd-err').className = 'err-msg';
+
+  const email = getCurrentUser(); const user = getUserData(email);
+  if (user) {
+    try {
+      analytics.track('Payment Auth Modal Cancelled', {
+        merchantId: user.mid, checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor, amount: Number(_sp.amount) || 0,
+        method: _sp.method, device: _sp.device,
+        failedAttemptsDuringModal: _pwdFailCount,
+        userLocation: _sp.userLocation,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+  }
+}
+
+function submitPaymentPassword() {
+  const email = getCurrentUser();
+  const user  = getUserData(email);
+  const inp   = document.getElementById('pay-pwd-input');
+  const errEl = document.getElementById('pay-pwd-err');
+  const entered = inp.value;
+
+  errEl.className = 'err-msg';
+
+  if (!entered) {
+    errEl.textContent = 'Please enter your password.';
+    errEl.className = 'err-msg show';
+    return;
+  }
+
+  if (!user || entered !== user.pass) {
+    _pwdFailCount++;
+
+    // Escalate churn risk on repeated auth failures
+    if (_pwdFailCount >= 3) user.churnRisk = 'HIGH';
+    else if (_pwdFailCount >= 1 && user.churnRisk === 'LOW') user.churnRisk = 'MEDIUM';
+    user.trustScore = Math.max(0, user.trustScore - 1);
+    saveUserData(email, user);
+
+    try {
+      analytics.track('Payment Auth Failed — Wrong Password', {
+        merchantId: user.mid, checkoutId: _sp.checkoutId,
+        corridor: _sp.corridor, amount: Number(_sp.amount) || 0,
+        method: _sp.method, device: _sp.device,
+        attemptNumber: _pwdFailCount,
+        churnRisk: user.churnRisk,
+        trustScore: user.trustScore,
+        userLocation: _sp.userLocation,
+        timestamp: new Date().toISOString(),
+      });
+    } catch(e) {}
+
+    inp.value = '';
+    errEl.textContent = _pwdFailCount >= 3
+      ? 'Too many incorrect attempts. Check your password.'
+      : 'Incorrect password. Please try again.';
+    errEl.className = 'err-msg show';
+    setTimeout(() => inp.focus(), 60);
+    return;
+  }
+
+  // Correct password
+  document.getElementById('pay-pwd-overlay').style.display = 'none';
+  inp.value = '';
+  errEl.className = 'err-msg';
+
+  try {
+    analytics.track('Payment Auth Verified', {
+      merchantId: user.mid, checkoutId: _sp.checkoutId,
+      corridor: _sp.corridor, amount: Number(_sp.amount) || 0,
+      method: _sp.method, device: _sp.device,
+      attemptsNeeded: _pwdFailCount + 1,
+      userLocation: _sp.userLocation,
+      churnRisk: user.churnRisk,
+      trustScore: user.trustScore,
+      timestamp: new Date().toISOString(),
+    });
+  } catch(e) {}
+
+  spConfirm();
 }
 
 // ═══════════════════════════════════════════════════════════════
