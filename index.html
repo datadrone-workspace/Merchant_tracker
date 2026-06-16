@@ -2583,12 +2583,14 @@ function _startPendingTimer(user) {
   _spPendingTimer = setTimeout(() => {
     if (_sp.checkoutId && !_sp._completed) {
       try { analytics.track('Checkout Dropped', { merchantId: user.mid, checkoutId: _sp.checkoutId, corridor: _sp.corridor, amount: Number(_sp.amount)||0, method: _sp.method, status:'Pending', timestamp: new Date().toISOString() }); } catch(e){}
+      _funnelSetOutcome(_sp.checkoutId, 'dropped', user.mid);
     }
   }, 10*60*1000);
 }
 function _trackNavigationDropOff(user) {
   if (_sp.checkoutId && !_sp._completed && _sp.startedAt) {
     try { analytics.track('Checkout Abandoned', { merchantId: user.mid, checkoutId: _sp.checkoutId, corridor: _sp.corridor, amount: Number(_sp.amount)||0, method: _sp.method, status:'Abandoned', timestamp: new Date().toISOString() }); } catch(e){}
+    _funnelSetOutcome(_sp.checkoutId, 'abandoned', user.mid);
   }
 }
 function initSendPayment() {
@@ -2607,7 +2609,11 @@ function initSendPayment() {
   document.getElementById('sp-step-review').style.display='none';
   document.getElementById('sp-step-success').style.display='none';
   renderPersonaBanner(); renderMethodCards(); showRecommendation();
-  if (user) { _startPendingTimer(user); try { analytics.track('Checkout Started', { merchantId:user.mid, checkoutId:_sp.checkoutId, corridor:_sp.corridor, geo:_sp.persona?.geo, device:_sp.device, preferredPaymentMethod:_sp.persona?.preferredMethod, timestamp:_sp.startedAt }); } catch(e){} }
+  if (user) {
+    _startPendingTimer(user);
+    try { analytics.track('Checkout Started', { merchantId:user.mid, checkoutId:_sp.checkoutId, corridor:_sp.corridor, geo:_sp.persona?.geo, device:_sp.device, preferredPaymentMethod:_sp.persona?.preferredMethod, timestamp:_sp.startedAt }); } catch(e){}
+    _funnelStart(_sp.checkoutId, user.mid, _sp.corridor, _sp.persona?.geo || 'Unknown', _sp.device);
+  }
 }
 function renderPersonaBanner() {
   const banner = document.getElementById('sp-persona-banner'); if(!banner||!_sp.persona) return;
@@ -2647,6 +2653,7 @@ function selectMethod(m) {
   const email=getCurrentUser(); const user=getUserData(email); const cfg=CORRIDORS[_sp.corridor]; const meta=METHOD_META[m]||{};
   if(!user) return;
   try { analytics.track('Payment Method Selected', { merchantId:user.mid, checkoutId:_sp.checkoutId, corridor:_sp.corridor, method:m, isPreferredForCorridor:m===cfg?.rec, fee:meta.fee||0, estimatedTime:meta.time, geo:_sp.persona?.geo, device:_sp.device, timestamp:new Date().toISOString() }); } catch(e){}
+  _funnelSetMethod(_sp.checkoutId, m);
 }
 function onCorridorChange() {
   const val=document.getElementById('sp-corridor').value; _sp.corridor=val;
@@ -2771,7 +2778,8 @@ function spConfirm() {
   const email=getCurrentUser(); const user=getUserData(email);
   _clearPendingTimer();
   if(status==='Failed') {
-    if(user) { try{analytics.track('Payment Auth Failed',{
+    if(user) {
+      try{analytics.track('Payment Auth Failed',{
       merchantId:         user.mid,
       checkoutId:         _sp.checkoutId,
       transactionId:      txnId,
@@ -2787,14 +2795,20 @@ function spConfirm() {
       identity_confidence:_rmState.identityConfidence,
       transaction_count:  _rmState.getTxnCount(),
       location_changed:   _rmState.locationChanged,
-    });}catch(e){} user.transactions=user.transactions||[]; user.transactions.unshift({id:txnId,recipient:_sp.recipient,method:_sp.method,corridor:cfg?.label||_sp.corridor,amount,fee,status:'Failed',date:now.toISOString(),checkoutId:_sp.checkoutId}); saveUserData(email,user); }
+    });}catch(e){}
+      user.transactions=user.transactions||[];
+      user.transactions.unshift({id:txnId,recipient:_sp.recipient,method:_sp.method,corridor:cfg?.label||_sp.corridor,amount,fee,status:'Failed',date:now.toISOString(),checkoutId:_sp.checkoutId,geo:_sp.persona?.geo||_sp.userLocation||'Unknown',device:_sp.device});
+      saveUserData(email,user);
+      _funnelSetOutcome(_sp.checkoutId, 'failed', user.mid);
+    }
     showToast('Payment authentication failed. Please try again.','danger'); spBack(); return;
   }
   _sp._completed=true;
   if(user) {
     user.transactions=user.transactions||[];
-    user.transactions.unshift({id:txnId,recipient:_sp.recipient,method:_sp.method,corridor:cfg?.label||_sp.corridor,amount,fee,status:'Success',date:now.toISOString(),checkoutId:_sp.checkoutId});
+    user.transactions.unshift({id:txnId,recipient:_sp.recipient,method:_sp.method,corridor:cfg?.label||_sp.corridor,amount,fee,status:'Success',date:now.toISOString(),checkoutId:_sp.checkoutId,geo:_sp.persona?.geo||_sp.userLocation||'Unknown',device:_sp.device});
     saveUserData(email,user);
+    _funnelSetOutcome(_sp.checkoutId, 'completed', user.mid);
   }
   document.getElementById('sp-step-new').style.display='none';
   document.getElementById('sp-step-review').style.display='none';
@@ -3340,6 +3354,7 @@ function initRiskMonitor() {
     if (!_sp.checkoutId||_sp._completed||!_sp.startedAt) return;
     const email=getCurrentUser(); const user=email?getUserData(email):null; if(!user) return;
     try { analytics.track('Checkout Abandoned',{merchantId:user.mid,checkoutId:_sp.checkoutId,corridor:_sp.corridor,amount:Number(_sp.amount)||0,method:_sp.method,status:'Abandoned',trigger,timestamp:new Date().toISOString()}); }catch(e){}
+    _funnelSetOutcome(_sp.checkoutId, 'abandoned', user.mid);
     _sp.checkoutId=null;
   }
   window.addEventListener('beforeunload', ()=>_fireAbandon('tab_closed'));
@@ -3616,13 +3631,165 @@ function verifyOtp() {
 // above now ensures transaction_count and velocity_high are current
 // when that event fires.
 
+// ═══════════════════════════════════════════════════════════════
+// PAYMENT FUNNEL INTELLIGENCE — Drop-off / Geography / Method / Device
+// (Silent backend-only instrumentation. No UI surface — Segment only.)
+// ═══════════════════════════════════════════════════════════════
 
-  origShowPage(id);
-  if (id === 'page-onboard1') { setTimeout(populateOnboardingForm, 100); }
-  if (id === 'page-onboard2') { renderDocGrid(); }
-  if (id === 'page-login') { ['li-email','li-pass'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const le=document.getElementById('li-err'); if(le) le.className='err-msg'; }
-  if (id === 'page-signup') { ['su-name','su-email','su-pass','su-pass2'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const se=document.getElementById('su-err'); if(se) se.className='err-msg'; }
+const FUNNEL_STORE_KEY = 'mos_funnel_store_v1';
+const FUNNEL_MAX_EVENTS = 300;
 
+function _funnelGetStore() {
+  try {
+    const raw = localStorage.getItem(FUNNEL_STORE_KEY);
+    return raw ? JSON.parse(raw) : { events: [] };
+  } catch(e) { return { events: [] }; }
+}
+function _funnelSaveStore(store) {
+  try {
+    if (store.events.length > FUNNEL_MAX_EVENTS) store.events = store.events.slice(-FUNNEL_MAX_EVENTS);
+    localStorage.setItem(FUNNEL_STORE_KEY, JSON.stringify(store));
+  } catch(e) {}
+}
+// Record a new checkout attempt entering the funnel
+function _funnelStart(checkoutId, merchantId, corridor, geo, device) {
+  if (!checkoutId) return;
+  const store = _funnelGetStore();
+  store.events.push({
+    checkoutId, merchantId, corridor, geo: geo || 'Unknown', device: device || 'Unknown',
+    method: null, outcome: 'in_progress', startedAt: Date.now(),
+  });
+  _funnelSaveStore(store);
+}
+// Attach the chosen payment method to the in-progress funnel record
+function _funnelSetMethod(checkoutId, method) {
+  if (!checkoutId) return;
+  const store = _funnelGetStore();
+  const ev = store.events.find(e => e.checkoutId === checkoutId);
+  if (ev) ev.method = method;
+  _funnelSaveStore(store);
+}
+// Close out a funnel record with a final outcome: completed | failed | abandoned | dropped
+function _funnelSetOutcome(checkoutId, outcome, merchantId) {
+  if (!checkoutId) return;
+  const store = _funnelGetStore();
+  let ev = store.events.find(e => e.checkoutId === checkoutId);
+  if (!ev) {
+    ev = {
+      checkoutId, merchantId: merchantId || null,
+      corridor: (typeof _sp !== 'undefined' && _sp.corridor) || null,
+      geo: (typeof _sp !== 'undefined' && _sp.persona?.geo) || 'Unknown',
+      device: (typeof _sp !== 'undefined' && _sp.device) || 'Unknown',
+      method: (typeof _sp !== 'undefined' && _sp.method) || null,
+      outcome: 'in_progress', startedAt: Date.now(),
+    };
+    store.events.push(ev);
+  }
+  if (ev.outcome === 'in_progress') {
+    ev.outcome = outcome;
+    ev.endedAt = Date.now();
+    _funnelSaveStore(store);
+    _computeAndFireFunnelAnalytics();
+  }
+}
+function _funnelPct(part, total) {
+  if (!total) return 0;
+  return Math.round((part / total) * 1000) / 10; // one decimal place
+}
+// Recompute drop-off / geography / method / device breakdowns from accumulated
+// checkout history and silently fire them to Segment. Never touches the DOM.
+function _computeAndFireFunnelAnalytics() {
+  const email = getCurrentUser();
+  const user  = email ? getUserData(email) : null;
+  if (!user) return;
+  const store = _funnelGetStore();
+  const finished = store.events.filter(e => e.outcome !== 'in_progress');
+  const total = finished.length;
+  if (total === 0) return;
+
+  const ts = new Date().toISOString();
+
+  // ── 1. Drop-off Rate ──
+  const droppedEvents = finished.filter(e => e.outcome !== 'completed');
+  const dropOffRatePct = _funnelPct(droppedEvents.length, total);
+  try {
+    analytics.track('Payment Drop-off Rate Calculated', {
+      merchantId: user.mid,
+      totalCheckouts: total,
+      droppedCheckouts: droppedEvents.length,
+      completedCheckouts: total - droppedEvents.length,
+      dropOffRatePct,
+      timestamp: ts,
+    });
+  } catch(e) {}
+
+  // ── 2. Geography Breakdown ──
+  const geoCounts = {};
+  finished.forEach(e => { const g = e.geo || 'Unknown'; geoCounts[g] = (geoCounts[g]||0) + 1; });
+  const geoBreakdownPct = {};
+  Object.keys(geoCounts).forEach(g => { geoBreakdownPct[g] = _funnelPct(geoCounts[g], total); });
+  try {
+    analytics.track('Payment Geography Breakdown Calculated', {
+      merchantId: user.mid,
+      totalCheckouts: total,
+      breakdownPct: geoBreakdownPct,
+      counts: geoCounts,
+      timestamp: ts,
+    });
+  } catch(e) {}
+
+  // ── 3. Payment Method Breakdown (share of volume + per-method drop rate) ──
+  const methodGroups = {};
+  finished.forEach(e => {
+    const m = e.method || 'Unselected';
+    if (!methodGroups[m]) methodGroups[m] = { count: 0, dropped: 0 };
+    methodGroups[m].count++;
+    if (e.outcome !== 'completed') methodGroups[m].dropped++;
+  });
+  const methodBreakdown = {};
+  Object.keys(methodGroups).forEach(m => {
+    const g = methodGroups[m];
+    methodBreakdown[m] = {
+      sharePct: _funnelPct(g.count, total),
+      dropRatePct: _funnelPct(g.dropped, g.count),
+    };
+  });
+  try {
+    analytics.track('Payment Method Breakdown Calculated', {
+      merchantId: user.mid,
+      totalCheckouts: total,
+      breakdown: methodBreakdown,
+      timestamp: ts,
+    });
+  } catch(e) {}
+
+  // ── 4. Device Breakdown ──
+  const deviceCounts = {};
+  finished.forEach(e => { const d = e.device || 'Unknown'; deviceCounts[d] = (deviceCounts[d]||0) + 1; });
+  const deviceBreakdownPct = {};
+  Object.keys(deviceCounts).forEach(d => { deviceBreakdownPct[d] = _funnelPct(deviceCounts[d], total); });
+  try {
+    analytics.track('Payment Device Breakdown Calculated', {
+      merchantId: user.mid,
+      totalCheckouts: total,
+      breakdownPct: deviceBreakdownPct,
+      counts: deviceCounts,
+      timestamp: ts,
+    });
+  } catch(e) {}
+}
+
+// ── Patch showPage for page-specific side effects (onboarding/login/signup resets) ──
+(function patchShowPage() {
+  const _origShowPage = showPage;
+  window.showPage = function(id) {
+    _origShowPage(id);
+    if (id === 'page-onboard1') { setTimeout(populateOnboardingForm, 100); }
+    if (id === 'page-onboard2') { renderDocGrid(); }
+    if (id === 'page-login') { ['li-email','li-pass'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const le=document.getElementById('li-err'); if(le) le.className='err-msg'; }
+    if (id === 'page-signup') { ['su-name','su-email','su-pass','su-pass2'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const se=document.getElementById('su-err'); if(se) se.className='err-msg'; }
+  };
+})();
 </script>
 </body>
 </html>
