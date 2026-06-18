@@ -3523,6 +3523,14 @@ function _funnelSetOutcome(checkoutId, outcome, merchantId) {
     store.events.push(ev);
   }
   if (ev.outcome === 'in_progress') {
+    // Sync the local storage funnel event with the final, dynamic state of the checkout form
+    if (typeof _sp !== 'undefined' && _sp.checkoutId === checkoutId) {
+      if (_sp.corridor) ev.corridor = _sp.corridor;
+      if (_sp.method) ev.method = _sp.method;
+      const finalGeo = _sp.persona?.geo || _sp.userLocation || 'Unknown';
+      ev.geo = finalGeo;
+      if (_sp.device) ev.device = _sp.device;
+    }
     ev.outcome = outcome; ev.endedAt = Date.now(); _funnelSaveStore(store);
 
     // Fire PostHog outcome/status events
@@ -3542,7 +3550,7 @@ function _funnelSetOutcome(checkoutId, outcome, merchantId) {
       }
     } catch(e) {}
 
-    _computeAndFireFunnelAnalytics();
+    _computeAndFireFunnelAnalytics(ev);
   }
 }
 function _funnelPct(part, total) {
@@ -3581,7 +3589,7 @@ function _fireMethodSelectedEvent(user, method, checkoutId, corridor, geo, devic
 // state change (completed / abandoned / failed / dropped).
 // No UI changes — Segment-only.
 // ────────────────────────────────────────────────────────────────
-function _computeAndFireFunnelAnalytics() {
+function _computeAndFireFunnelAnalytics(currentEvent) {
   const email = getCurrentUser();
   const user  = email ? getUserData(email) : null;
   if (!user) return;
@@ -3616,7 +3624,9 @@ function _computeAndFireFunnelAnalytics() {
     if (e.outcome === 'abandoned' || e.outcome === 'dropped') geoDropped[g]  = (geoDropped[g]  || 0) + 1;
     if (e.outcome === 'failed')                               geoFailed[g]   = (geoFailed[g]   || 0) + 1;
   });
+  const currentGeo = currentEvent ? (currentEvent.geo || 'Unknown') : null;
   Object.keys(geoCounts).forEach(country => {
+    if (currentGeo && country !== currentGeo) return;
     const cTotal = geoCounts[country]; const cDropped = geoDropped[country] || 0; const cFailed = geoFailed[country] || 0; const cDone = geoComplete[country] || 0;
     try { analytics.track(country + ' Geography Breakdown Calculated', { merchantId: mid, country, totalCheckouts: cTotal, completedCheckouts: cDone, droppedCheckouts: cDropped, failedCheckouts: cFailed, shareOfTotal: _funnelPct(cTotal, total), shareOfTotalPct: _funnelPct(cTotal, total) + '%', dropOffRate: _funnelPct(cDropped, cTotal), dropOffRatePct: _funnelPct(cDropped, cTotal) + '%', completionRate: _funnelPct(cDone, cTotal), completionRatePct: _funnelPct(cDone, cTotal) + '%', failureRate: _funnelPct(cFailed, cTotal), timestamp: ts }); } catch(e) {}
   });
@@ -3630,7 +3640,9 @@ function _computeAndFireFunnelAnalytics() {
     if (e.outcome === 'abandoned' || e.outcome === 'dropped') deviceDropped[d]  = (deviceDropped[d]  || 0) + 1;
     if (e.outcome === 'failed')                               deviceFailed[d]   = (deviceFailed[d]   || 0) + 1;
   });
+  const currentDevice = currentEvent ? (currentEvent.device || 'Unknown') : null;
   Object.keys(deviceCounts).forEach(device => {
+    if (currentDevice && device !== currentDevice) return;
     const dTotal = deviceCounts[device]; const dDropped = deviceDropped[device] || 0; const dFailed = deviceFailed[device] || 0; const dDone = deviceComplete[device] || 0;
     try { analytics.track(device + ' Device Breakdown Calculated', { merchantId: mid, device, totalCheckouts: dTotal, completedCheckouts: dDone, droppedCheckouts: dDropped, failedCheckouts: dFailed, shareOfTotal: _funnelPct(dTotal, total), shareOfTotalPct: _funnelPct(dTotal, total) + '%', dropOffRate: _funnelPct(dDropped, dTotal), dropOffRatePct: _funnelPct(dDropped, dTotal) + '%', completionRate: _funnelPct(dDone, dTotal), completionRatePct: _funnelPct(dDone, dTotal) + '%', failureRate: _funnelPct(dFailed, dTotal), timestamp: ts }); } catch(e) {}
   });
@@ -3645,7 +3657,9 @@ function _computeAndFireFunnelAnalytics() {
     if (e.outcome === 'abandoned' || e.outcome === 'dropped') methodGroups[m].dropped++;
     if (e.outcome === 'failed')                               methodGroups[m].failed++;
   });
+  const currentMethod = currentEvent ? (currentEvent.method || 'Unselected') : null;
   Object.keys(methodGroups).forEach(method => {
+    if (currentMethod && method !== currentMethod) return;
     const g = methodGroups[method]; const dropRate = _funnelPct(g.dropped, g.count); const failRate = _funnelPct(g.failed, g.count); const doneRate = _funnelPct(g.completed, g.count);
     try { analytics.track(method + ' Method Breakdown Calculated', { merchantId: mid, method, totalCheckouts: g.count, completedCheckouts: g.completed, droppedCheckouts: g.dropped, failedCheckouts: g.failed, shareOfTotal: _funnelPct(g.count, total), shareOfTotalPct: _funnelPct(g.count, total) + '%', dropOffRate: dropRate, dropOffRatePct: dropRate + '%', completionRate: doneRate, completionRatePct: doneRate + '%', failureRate: failRate, failureRatePct: failRate + '%', timestamp: ts }); } catch(e) {}
   });
