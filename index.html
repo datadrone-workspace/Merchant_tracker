@@ -668,18 +668,7 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- RISK ACTION POPUP -->
-<div id="risk-popup-overlay">
-  <div class="risk-popup-box" id="risk-popup-box">
-    <div class="risk-popup-close" onclick="closeRiskPopup()">✕</div>
-    <div class="risk-popup-icon" id="rp-icon"></div>
-    <div class="risk-popup-title" id="rp-title">Risk Action Triggered</div>
-    <div class="risk-popup-ts" id="rp-ts"></div>
-    <div class="risk-popup-desc" id="rp-desc"></div>
-    <div class="risk-popup-props" id="rp-props"></div>
-    <button class="btn btn-primary" style="width:auto;padding:10px 24px;" onclick="closeRiskPopup()">Acknowledge →</button>
-  </div>
-</div>
+
 
 <!-- RECOVERY OVERLAY -->
 <div id="recovery-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,12,12,.96);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;">
@@ -892,7 +881,7 @@
       <!-- KYC VERIFICATION BLOCK (NEW) -->
       <div style="margin-top:24px;padding:20px;background:rgba(144,144,144,.04);border:1px solid rgba(144,144,144,.15);border-radius:14px;">
         <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;"> KYC Verification</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Enter your government ID details. Stored locally — no backend required.</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Enter your government ID details.</div>
         <div class="form-grid">
           <div class="field">
             <label>ID Type</label>
@@ -993,10 +982,6 @@
             <div class="profile-card" style="padding:0;overflow:hidden;">
               <div style="background:linear-gradient(135deg,#1d1d1d 0%,#181818 100%);padding:28px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;">
                 <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;color:#ffffff;flex-shrink:0;">C</div>
-                <div>
-                  <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;">CRUDPAY</div>
-                  <div style="font-size:13px;color:var(--muted);margin-top:2px;">Unified Merchant Intelligence Platform</div>
-                </div>
                 <div style="margin-left:auto;text-align:right;">
                   <div style="font-size:11px;color:var(--muted);">Platform Status</div>
                   <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
@@ -1680,12 +1665,10 @@ function renderKPIs(user) {
   const lastLoginAgo = timeAgo(user.lastLogin);
   const churnColor = { 'LOW': 'var(--success)', 'MEDIUM': 'var(--warning)', 'HIGH': 'var(--danger)', 'CRITICAL': '#5c5c5c' };
   const kpis = [
-    { label: 'Onboarding Progress', val: user.onboarding.pct + '%',    sub: user.activationStatus,                    color: 'var(--accent)' },
+    { label: 'Onboarding Progress', val: user.onboarding.pct + '%',                       color: 'var(--accent)' },
     { label: 'Last Login',          val: lastLoginAgo,                  sub: new Date(user.lastLogin).toLocaleDateString('en-IN'), color: 'var(--accent2)' },
     { label: 'Open Tickets',        val: user.openTickets || 0,         sub: 'Support requests',                        color: 'var(--warning)' },
-    { label: 'Churn Risk',          val: user.churnRisk,               sub: `${user.loginAttemptsFailed} failed attempts`, color: churnColor[user.churnRisk] || 'var(--success)' },
-    { label: 'Trust Score',         val: user.trustScore + '/10',       sub: 'Account reliability',                     color: user.trustScore >= 7 ? 'var(--success)' : user.trustScore >= 4 ? 'var(--warning)' : 'var(--danger)' },
-  ];
+     ];
   document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
     <div class="kpi-card" style="--accent-c:${k.color}">
       <div class="kpi-label">${k.label}</div>
