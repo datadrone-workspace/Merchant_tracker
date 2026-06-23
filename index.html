@@ -1,64 +1,61 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRUDPAY — Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
- :root {
-  /* ── Core Palette ── */
-  --bg: #0b0b0b;
-  --surface: #141414;
-  --surface2: #1c1c1c;
-  --surface3: #222222;
-  --border: #2b2b2b;
-  --border-muted: #1d1d1d;
+  :root {
+    /* ── Core Palette (light, professional merchant payment surface) ── */
+    --bg:         #f5f6f8;
+    --surface:    #ffffff;
+    --surface2:   #f4f5f7;
+    --surface3:   #eceef1;
+    --border:     #e2e5ea;
+    --border-muted: #edeef1;
 
-  /* ── Accent Colors ── */
-  --teal: #909090;
-  --blue: #7a7a7a;
-  --accent: #909090;
-  --accent1: #909090;
-  --accent2: #7a7a7a;
+    /* ── Accent ── */
+    --teal:   #635bff;
+    --blue:   #0570de;
+    --accent:  #635bff;
+    --accent2: #0570de;
+    --accent1: #635bff;
 
-  /* ── Semantic Colours ── */
-  --danger: #797979;
-  --warning: #a7a7a7;
-  --success: #808080;
+    /* ── Semantic colours ── */
+    --danger:  #df1b41;
+    --warning: #b65c00;
+    --success: #0a8a4a;
 
-  /* ── Typography ── */
-  --text: #ffffff;
-  --text-2: #ffffff;
-  --text-3: #ffffff;
-  --muted: #ffffff;
-  --mono: 'Poppins', sans-serif;
+    /* ── Typography ── */
+    --text:   #1a1f36;
+    --text-2: #5a6271;
+    --text-3: #8792a2;
+    --muted:  #6b7280;
+    --mono:   'JetBrains Mono', monospace;
 
-  /* ── Card Background ── */
-  --card: #1a1a1a;
+    /* ── Card background ── */
+    --card: #ffffff;
 
-  /* ── Spacing / Radius ── */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+    /* ── Spacing / radius system ── */
+    --radius-sm:  6px;
+    --radius-md:  8px;
+    --radius-lg:  10px;
+    --radius-xl:  12px;
 
-  /* ── Shadows ── */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
-  --shadow-md: 0 4px 16px rgba(0,0,0,.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
-
-  --glow-accent: 0 0 24px rgba(144,144,144,.18);
-  --glow-blue: 0 0 24px rgba(122,122,122,.18);
-}
-    
-
+    /* ── Shadow tokens ── */
+    --shadow-sm:  0 1px 2px rgba(20,24,36,.06);
+    --shadow-md:  0 2px 8px rgba(20,24,36,.06);
+    --shadow-lg:  0 4px 16px rgba(20,24,36,.08);
+    --glow-accent: none;
+    --glow-blue:   none;
+  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Poppins', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -66,80 +63,56 @@
   .page { display: none; min-height: 100vh; }
   .page.active { display: flex; }
 
-  /* Subtle grid texture */
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(43,43,43,.4) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(43,43,43,.4) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
   /* ═══════════════════════════════
      AUTH PAGES
   ═══════════════════════════════ */
   .auth-wrap {
     width: 100%; min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    background:
-      radial-gradient(ellipse 80% 60% at 15% 50%, rgba(144,144,144,.06) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 85% 20%, rgba(122,122,122,.05) 0%, transparent 60%);
+    background: var(--bg);
     padding: 24px;
     position: relative;
-  }
-  .auth-wrap::after {
-    content: '';
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 480px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: .3;
   }
   .auth-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: 48px 40px;
-    width: 100%; max-width: 460px;
+    width: 100%; max-width: 440px;
     position: relative; overflow: hidden;
-    box-shadow: var(--shadow-lg), var(--glow-accent);
+    box-shadow: var(--shadow-lg);
     animation: cardIn .4s cubic-bezier(.16,1,.3,1);
   }
   @keyframes cardIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
-  .auth-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
   .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
   .brand-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--accent);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 18px; color: #ffffff;
-    box-shadow: 0 4px 12px rgba(144,144,144,.3);
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 16px; color: #fff;
   }
   .brand-name {
-    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 22px;
-    background: linear-gradient(90deg, var(--text), var(--text-2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 20px;
+    color: var(--text);
+    letter-spacing: -0.01em;
   }
-  .auth-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 26px; margin-bottom: 6px; line-height: 1.2; }
+  .auth-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 24px; margin-bottom: 6px; line-height: 1.2; color: var(--text); }
   .auth-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
   .field { margin-bottom: 20px; }
   .field label {
     display: block; font-size: 12px; font-weight: 600; color: var(--text-2);
-    margin-bottom: 8px; letter-spacing: .05em; text-transform: uppercase;
+    margin-bottom: 8px; letter-spacing: .03em; text-transform: uppercase;
   }
   .field input, .field select, .field textarea {
     width: 100%; background: var(--surface2); border: 1px solid var(--border);
     border-radius: var(--radius-md); padding: 13px 16px; color: var(--text);
-    font-family: 'Poppins', sans-serif; font-size: 15px; transition: border-color .2s, box-shadow .2s; outline: none;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; transition: border-color .2s, box-shadow .2s; outline: none;
   }
   .field input::placeholder, .field textarea::placeholder { color: var(--text-3); }
-  .field input:hover, .field select:hover, .field textarea:hover { border-color: var(--border-muted); border-color: #3c3c3c; }
+  .field input:hover, .field select:hover, .field textarea:hover { border-color: var(--border-muted); border-color: #c7cbd3; }
   .field input:focus, .field select:focus, .field textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(144,144,144,.1), inset 0 1px 0 rgba(144,144,144,.04);
+    box-shadow: 0 0 0 3px rgba(99,91,255,.1), inset 0 1px 0 rgba(99,91,255,.04);
     background: var(--surface3);
   }
   .field select { appearance: none; cursor: pointer; }
@@ -147,36 +120,35 @@
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 13px 24px; border-radius: var(--radius-md); border: none;
-    font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
     cursor: pointer; transition: all .2s; text-decoration: none; letter-spacing: .01em;
     white-space: nowrap;
   }
   .btn-primary {
-    background: linear-gradient(135deg, var(--accent) 0%, #7d7d7d 100%);
-    color: #121212; width: 100%;
-    box-shadow: 0 2px 8px rgba(144,144,144,.2);
+    background: var(--accent);
+    color: #ffffff; width: 100%;
+    box-shadow: 0 2px 8px rgba(99,91,255,.2);
   }
   .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(144,144,144,.35);
-    filter: brightness(1.05);
+    background: #5346f0;
+    box-shadow: 0 4px 12px rgba(99,91,255,.3);
   }
-  .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(144,144,144,.2); }
+  .btn-primary:active { box-shadow: 0 2px 8px rgba(99,91,255,.2); }
   .btn-secondary {
     background: var(--surface2); color: var(--text);
     border: 1px solid var(--border);
   }
-  .btn-secondary:hover { border-color: #4c4c4c; background: var(--surface3); color: var(--text); }
-  .btn-danger { background: var(--danger); color: #ffffff; box-shadow: 0 2px 8px rgba(121,121,121,.2); }
-  .btn-danger:hover { box-shadow: 0 4px 16px rgba(121,121,121,.3); transform: translateY(-1px); }
+  .btn-secondary:hover { border-color: #c7cbd3; background: var(--surface3); color: var(--text); }
+  .btn-danger { background: var(--danger); color: #fff; box-shadow: 0 2px 8px rgba(223,27,65,.2); }
+  .btn-danger:hover { box-shadow: 0 4px 16px rgba(223,27,65,.3); transform: translateY(-1px); }
   .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-  .btn-ghost:hover { color: var(--text); border-color: #4c4c4c; }
+  .btn-ghost:hover { color: var(--text); border-color: #c7cbd3; }
   .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--muted); }
   .auth-switch a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
   .auth-switch a:hover { text-decoration: underline; }
-  .err-msg { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: rgba(121,121,121,.08); border: 1px solid rgba(121,121,121,.2); border-radius: var(--radius-sm); }
+  .err-msg { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: rgba(223,27,65,.08); border: 1px solid rgba(223,27,65,.2); border-radius: var(--radius-sm); }
   .err-msg.show { display: block; }
-  .success-msg { color: var(--success); font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: rgba(128,128,128,.08); border: 1px solid rgba(128,128,128,.2); border-radius: var(--radius-sm); }
+  .success-msg { color: var(--success); font-size: 13px; margin-top: 8px; display: none; padding: 10px 14px; background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); border-radius: var(--radius-sm); }
   .success-msg.show { display: block; }
 
   /* ═══════════════════════════════
@@ -197,8 +169,8 @@
     justify-content: center; font-size: 13px; font-weight: 700; color: var(--muted);
     transition: all .3s; background: var(--surface);
   }
-  .step-dot.done { background: var(--accent); border-color: var(--accent); color: #121212; }
-  .step-dot.active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 4px rgba(144,144,144,.12); }
+  .step-dot.done { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+  .step-dot.active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 4px rgba(99,91,255,.12); }
   .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; transition: background .4s; min-width: 40px; max-width: 80px; }
   .step-line.done { background: var(--accent); }
   .onboard-card {
@@ -212,7 +184,7 @@
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
   }
-  .onboard-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 4px; }
+  .onboard-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 4px; }
   .onboard-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
@@ -240,8 +212,8 @@
     transition: all .25s ease; position: relative; overflow: hidden;
     background: var(--surface2);
   }
-  .doc-card:hover { border-color: var(--accent); background: rgba(144,144,144,.04); border-style: solid; }
-  .doc-card.uploaded { border-style: solid; border-color: var(--success); background: rgba(128,128,128,.05); }
+  .doc-card:hover { border-color: var(--accent); background: rgba(99,91,255,.04); border-style: solid; }
+  .doc-card.uploaded { border-style: solid; border-color: var(--success); background: rgba(16,185,129,.05); }
   .doc-card input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
   .doc-icon { font-size: 28px; margin-bottom: 10px; }
   .doc-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
@@ -280,7 +252,7 @@
     transition: all .15s; margin-bottom: 2px; position: relative;
   }
   .nav-item:hover { background: var(--surface2); color: var(--text-2); }
-  .nav-item.active { background: rgba(144,144,144,.1); color: var(--accent); font-weight: 600; }
+  .nav-item.active { background: rgba(99,91,255,.1); color: var(--accent); font-weight: 600; }
   .nav-item.active::before {
     content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
     width: 3px; border-radius: 0 3px 3px 0; background: var(--accent);
@@ -294,7 +266,7 @@
 
   .dash-main { flex: 1; margin-left: 0; min-height: 100vh; display: flex; flex-direction: column; }
   .topbar {
-    background: rgba(20,20,20,.85);
+    background: rgba(255,255,255,.85);
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     border-bottom: 1px solid var(--border);
@@ -308,22 +280,22 @@
     align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all .2s;
     flex-shrink: 0;
   }
-  .hamburger:hover { border-color: var(--accent); background: rgba(144,144,144,.06); }
+  .hamburger:hover { border-color: var(--accent); background: rgba(99,91,255,.06); }
   .hamburger span { display: block; width: 14px; height: 1.5px; background: var(--text-2); border-radius: 2px; }
-  .topbar-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; flex: 1; color: var(--text); }
+  .topbar-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 16px; flex: 1; color: var(--text); }
   .topbar-right { display: flex; align-items: center; gap: 10px; }
   .topbar-badge {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-    background: rgba(144,144,144,.08); color: var(--accent); border: 1px solid rgba(144,144,144,.15);
+    background: rgba(99,91,255,.08); color: var(--accent); border: 1px solid rgba(99,91,255,.15);
   }
   .topbar-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
   .avatar {
     width: 34px; height: 34px; border-radius: 50%;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 13px; color: #121212; cursor: pointer;
-    border: 2px solid rgba(144,144,144,.3); transition: border-color .2s;
+    font-weight: 700; font-size: 13px; color: #ffffff; cursor: pointer;
+    border: 2px solid rgba(99,91,255,.3); transition: border-color .2s;
   }
   .avatar:hover { border-color: var(--accent); }
   .dash-content { padding: 28px 24px; flex: 1; max-width: 1280px; width: 100%; }
@@ -350,7 +322,7 @@
     pointer-events: none;
   }
   .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; font-weight: 600; }
-  .kpi-val { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.1; }
+  .kpi-val { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.1; }
   .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
   /* ═══════════════════════════════
@@ -361,11 +333,11 @@
     padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
     letter-spacing: .02em;
   }
-  .badge-danger  { background: rgba(121,121,121,.12);  color: #9d9d9d; border: 1px solid rgba(121,121,121,.2); }
-  .badge-success { background: rgba(128,128,128,.12); color: #9d9d9d; border: 1px solid rgba(128,128,128,.2); }
-  .badge-warning { background: rgba(167,167,167,.12); color: #bfbfbf; border: 1px solid rgba(167,167,167,.2); }
-  .badge-blue    { background: rgba(122,122,122,.12);  color: #9a9a9a; border: 1px solid rgba(122,122,122,.2); }
-  .badge-muted   { background: rgba(114,114,114,.12); color: var(--muted); border: 1px solid rgba(114,114,114,.15); }
+  .badge-danger  { background: rgba(223,27,65,.12);  color: #df1b41; border: 1px solid rgba(223,27,65,.2); }
+  .badge-success { background: rgba(16,185,129,.12); color: #0a8a4a; border: 1px solid rgba(16,185,129,.2); }
+  .badge-warning { background: rgba(182,92,0,.12); color: #b65c00; border: 1px solid rgba(182,92,0,.2); }
+  .badge-blue    { background: rgba(5,112,222,.12);  color: #0570de; border: 1px solid rgba(5,112,222,.2); }
+  .badge-muted   { background: rgba(100,116,139,.12); color: var(--muted); border: 1px solid rgba(100,116,139,.15); }
 
   /* ═══════════════════════════════
      PROFILE & CONTENT CARDS
@@ -379,11 +351,11 @@
     width: 68px; height: 68px; border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 26px; color: #121212; flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(144,144,144,.25);
+    font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 26px; color: #ffffff; flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(99,91,255,.25);
   }
   .profile-info { flex: 1; }
-  .profile-name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+  .profile-name { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
   .profile-id { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-family: monospace; }
   .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
   .profile-field .pf-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; font-weight: 600; }
@@ -394,13 +366,13 @@
   ═══════════════════════════════ */
   .alert-wrap { display: flex; gap: 20px; flex-wrap: wrap; }
   .alert-panel { flex: 1; min-width: 280px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
-  .alert-panel-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .alert-panel-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
   .compose-field { margin-bottom: 16px; }
   .compose-field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; }
   .compose-field input, .compose-field textarea {
     width: 100%; background: var(--surface2); border: 1px solid var(--border);
     border-radius: var(--radius-sm); padding: 10px 14px; color: var(--text);
-    font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: border-color .2s;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s;
   }
   .compose-field textarea { min-height: 120px; resize: vertical; }
   .compose-field input:focus, .compose-field textarea:focus { border-color: var(--accent); }
@@ -410,7 +382,7 @@
     border-radius: var(--radius-md); padding: 14px 16px;
     transition: border-color .2s;
   }
-  .notif-item:hover { border-color: #3c3c3c; }
+  .notif-item:hover { border-color: #c7cbd3; }
   .notif-item .ni-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .notif-item .ni-name { font-weight: 600; font-size: 13px; }
   .notif-item .ni-time { font-size: 11px; color: var(--muted); }
@@ -431,15 +403,15 @@
     box-shadow: var(--shadow-lg);
   }
   .toast.show { transform: translateY(0) scale(1); opacity: 1; }
-  .toast.success { border-color: rgba(128,128,128,.4); color: #9d9d9d; background: rgba(128,128,128,.06); }
-  .toast.danger  { border-color: rgba(121,121,121,.4);  color: #9d9d9d; background: rgba(121,121,121,.06); }
-  .toast.info    { border-color: rgba(122,122,122,.4); color: #9a9a9a; background: rgba(122,122,122,.06); }
+  .toast.success { border-color: rgba(16,185,129,.4); color: #0a8a4a; background: rgba(16,185,129,.06); }
+  .toast.danger  { border-color: rgba(223,27,65,.4);  color: #df1b41; background: rgba(223,27,65,.06); }
+  .toast.info    { border-color: rgba(5,112,222,.4); color: #0570de; background: rgba(5,112,222,.06); }
 
   /* ═══════════════════════════════
      SECTION HEADERS & MISC
   ═══════════════════════════════ */
   .section-title {
-    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px;
     margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--text);
   }
   .dash-section { margin-bottom: 28px; }
@@ -472,25 +444,25 @@
     border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer;
     transition: all .2s; display: flex; align-items: center; gap: 12px;
   }
-  .pay-method-card:hover { border-color: rgba(144,144,144,.4); background: rgba(144,144,144,.04); }
-  .pay-method-card.selected { border-color: var(--accent); background: rgba(144,144,144,.07); box-shadow: 0 0 0 3px rgba(144,144,144,.1); }
-  .pay-method-card.recommended { border-color: rgba(122,122,122,.4); }
-  .pay-method-card.featured-first { border-color: rgba(128,128,128,.4); background: rgba(128,128,128,.04); }
+  .pay-method-card:hover { border-color: rgba(99,91,255,.4); background: rgba(99,91,255,.04); }
+  .pay-method-card.selected { border-color: var(--accent); background: rgba(99,91,255,.07); box-shadow: 0 0 0 3px rgba(99,91,255,.1); }
+  .pay-method-card.recommended { border-color: rgba(5,112,222,.4); }
+  .pay-method-card.featured-first { border-color: rgba(16,185,129,.4); background: rgba(16,185,129,.04); }
   .pm-name { font-weight: 600; font-size: 13.5px; }
   .pm-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .pm-info { flex: 1; }
-  .pm-badge-first    { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(128,128,128,.12);color:#9d9d9d;margin-right:4px;border:1px solid rgba(128,128,128,.2); }
-  .pm-badge-preferred{ display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(144,144,144,.12);color:var(--accent);margin-right:4px;border:1px solid rgba(144,144,144,.2); }
-  .pm-badge-rec      { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(122,122,122,.12);color:#9a9a9a;margin-right:4px;border:1px solid rgba(122,122,122,.2); }
-  .pm-badge-slow     { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(167,167,167,.1);color:#bfbfbf;margin-right:4px;border:1px solid rgba(167,167,167,.2); }
+  .pm-badge-first    { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(16,185,129,.12);color:#0a8a4a;margin-right:4px;border:1px solid rgba(16,185,129,.2); }
+  .pm-badge-preferred{ display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(99,91,255,.12);color:var(--accent);margin-right:4px;border:1px solid rgba(99,91,255,.2); }
+  .pm-badge-rec      { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(5,112,222,.12);color:#0570de;margin-right:4px;border:1px solid rgba(5,112,222,.2); }
+  .pm-badge-slow     { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(182,92,0,.1);color:#b65c00;margin-right:4px;border:1px solid rgba(182,92,0,.2); }
 
   .review-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border); }
   .review-row:last-child { border-bottom:none; }
   .rr-key { font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em; }
   .rr-val { font-size:14px;font-weight:600; }
 
-  .persona-brazil { background:rgba(128,128,128,.07);border-color:rgba(128,128,128,.25);color:#9d9d9d; }
-  .persona-india  { background:rgba(167,167,167,.07);border-color:rgba(167,167,167,.25);color:#bfbfbf; }
+  .persona-brazil { background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.25);color:#0a8a4a; }
+  .persona-india  { background:rgba(182,92,0,.07);border-color:rgba(182,92,0,.25);color:#b65c00; }
   .txn-id { font-size:11px;color:var(--muted);font-family:monospace;margin-top:2px; }
 
   /* ═══════════════════════════════
@@ -501,12 +473,12 @@
     border-radius: var(--radius-lg); padding: 18px; display: flex; align-items: flex-start; gap: 14px;
     transition: all .3s;
   }
-  .risk-signal-card.danger { border-color: rgba(121,121,121,.4); background: rgba(121,121,121,.05); }
-  .risk-signal-card.success { border-color: rgba(128,128,128,.3); background: rgba(128,128,128,.04); }
-  .risk-signal-card.warning { border-color: rgba(167,167,167,.3); background: rgba(167,167,167,.04); }
+  .risk-signal-card.danger { border-color: rgba(223,27,65,.4); background: rgba(223,27,65,.05); }
+  .risk-signal-card.success { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.04); }
+  .risk-signal-card.warning { border-color: rgba(182,92,0,.3); background: rgba(182,92,0,.04); }
   .risk-signal-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
   .risk-signal-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; font-weight: 600; }
-  .risk-signal-val { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px; }
+  .risk-signal-val { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px; }
   .risk-signal-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
 
   .risk-score-ring {
@@ -514,10 +486,10 @@
     border: 6px solid var(--danger);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     margin: 0 auto 16px;
-    box-shadow: 0 0 24px rgba(121,121,121,.25);
+    box-shadow: 0 0 24px rgba(223,27,65,.25);
     animation: riskPulse 2s infinite;
   }
-  @keyframes riskPulse { 0%,100%{box-shadow:0 0 24px rgba(121,121,121,.25)} 50%{box-shadow:0 0 40px rgba(121,121,121,.5)} }
+  @keyframes riskPulse { 0%,100%{box-shadow:0 0 24px rgba(223,27,65,.25)} 50%{box-shadow:0 0 40px rgba(223,27,65,.5)} }
 
   .risk-event-chain {
     display: flex; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 4px;
@@ -528,9 +500,9 @@
     background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
     transition: all .4s;
   }
-  .risk-event-step.done { background: rgba(144,144,144,.1); border-color: rgba(144,144,144,.4); color: var(--accent); }
-  .risk-event-step.active { background: rgba(167,167,167,.12); border-color: rgba(167,167,167,.4); color: #bfbfbf; animation: stepPulse 1s infinite; }
-  .risk-event-step.danger { background: rgba(121,121,121,.1); border-color: rgba(121,121,121,.4); color: #9d9d9d; }
+  .risk-event-step.done { background: rgba(99,91,255,.1); border-color: rgba(99,91,255,.4); color: var(--accent); }
+  .risk-event-step.active { background: rgba(182,92,0,.12); border-color: rgba(182,92,0,.4); color: #b65c00; animation: stepPulse 1s infinite; }
+  .risk-event-step.danger { background: rgba(223,27,65,.1); border-color: rgba(223,27,65,.4); color: #df1b41; }
   @keyframes stepPulse { 0%,100%{opacity:1} 50%{opacity:.6} }
   .risk-event-arrow { color: var(--text-3); font-size: 14px; margin: 0 2px; }
 
@@ -539,10 +511,10 @@
     border-radius: var(--radius-lg); padding: 24px; text-align: center;
     cursor: pointer; transition: all .25s;
   }
-  .action-card:hover { transform: translateY(-2px); border-color: #4c4c4c; box-shadow: var(--shadow-md); }
-  .action-card.selected { border-color: var(--accent); background: rgba(144,144,144,.05); box-shadow: 0 0 0 3px rgba(144,144,144,.1); }
+  .action-card:hover { transform: translateY(-2px); border-color: #c7cbd3; box-shadow: var(--shadow-md); }
+  .action-card.selected { border-color: var(--accent); background: rgba(99,91,255,.05); box-shadow: 0 0 0 3px rgba(99,91,255,.1); }
   .action-icon { font-size: 36px; margin-bottom: 10px; }
-  .action-name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .action-name { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
   .action-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
   .outcome-metric {
@@ -550,7 +522,7 @@
     border-radius: var(--radius-lg); padding: 22px; text-align: center;
     border-top: 2px solid var(--accent);
   }
-  .outcome-metric-val { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 30px; color: var(--accent); margin-bottom: 6px; }
+  .outcome-metric-val { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 30px; color: var(--accent); margin-bottom: 6px; }
   .outcome-metric-label { font-size: 13px; color: var(--muted); line-height: 1.4; }
 
   .risk-step-nav {
@@ -579,7 +551,7 @@
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   }
-  .modal-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+  .modal-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
   .modal-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
   .modal-close {
     position: absolute; top: 20px; right: 20px; width: 30px; height: 30px;
@@ -587,7 +559,7 @@
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; font-size: 14px; color: var(--muted); transition: all .2s;
   }
-  .modal-close:hover { color: var(--text); border-color: #4c4c4c; }
+  .modal-close:hover { color: var(--text); border-color: #c7cbd3; }
 
   @keyframes bounceIn { 0%{transform:scale(.88);opacity:0;} 60%{transform:scale(1.04);} 100%{transform:scale(1);opacity:1;} }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
@@ -595,7 +567,16 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #4c4c4c; }
+  ::-webkit-scrollbar-thumb:hover { background: #c7cbd3; }
+
+  /* ── PAYMENT CENTER ── */
+  @media(max-width:700px) {
+    #pay-center-grid { grid-template-columns: 1fr !important; }
+  }
+  @media(max-width:760px) {
+    #sp-checkout-grid { grid-template-columns: 1fr !important; }
+    #sp-checkout-grid > div:last-child { order: -1; }
+  }
 
   /* ── RISK POPUP OVERLAY ── */
   #risk-popup-overlay {
@@ -615,7 +596,7 @@
   .risk-popup-box.popup-warning { border-top: 4px solid var(--warning); }
   .risk-popup-box.popup-info    { border-top: 4px solid var(--accent2); }
   .risk-popup-icon { font-size: 48px; margin-bottom: 12px; }
-  .risk-popup-title { font-family:'Poppins',sans-serif; font-weight:800; font-size:22px; margin-bottom:6px; }
+  .risk-popup-title { font-family:'DM Sans',sans-serif; font-weight:800; font-size:22px; margin-bottom:6px; }
   .risk-popup-ts { font-size:11px; color:var(--muted); margin-bottom:12px; font-family:monospace; }
   .risk-popup-desc { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:20px; }
   .risk-popup-props { background:rgba(0,0,0,.3); border-radius:10px; padding:14px; font-family:monospace; font-size:12px; line-height:1.8; margin-bottom:20px; border:1px solid var(--border); }
@@ -628,28 +609,28 @@
     padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
     letter-spacing: .02em; transition: all .3s;
   }
-  .rm-indicator-pill.red   { background: rgba(121,121,121,.1);  color: #9d9d9d; border:1px solid rgba(121,121,121,.25);  }
-  .rm-indicator-pill.green { background: rgba(128,128,128,.1); color: #9d9d9d; border:1px solid rgba(128,128,128,.25); }
-  .rm-indicator-pill.amber { background: rgba(167,167,167,.1); color: #bfbfbf; border:1px solid rgba(167,167,167,.25); }
+  .rm-indicator-pill.red   { background: rgba(223,27,65,.1);  color: #df1b41; border:1px solid rgba(223,27,65,.25);  }
+  .rm-indicator-pill.green { background: rgba(16,185,129,.1); color: #0a8a4a; border:1px solid rgba(16,185,129,.25); }
+  .rm-indicator-pill.amber { background: rgba(182,92,0,.1); color: #b65c00; border:1px solid rgba(182,92,0,.25); }
 
   /* ── IDENTITY CONFIDENCE DISPLAY ── */
   .identity-conf-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 7px 14px; border-radius: var(--radius-md); font-family:'Poppins',sans-serif;
+    padding: 7px 14px; border-radius: var(--radius-md); font-family:'DM Sans',sans-serif;
     font-weight: 700; font-size: 14px; transition: all .4s;
   }
-  .identity-conf-badge.high { background:rgba(128,128,128,.1); color:#9d9d9d; border:1px solid rgba(128,128,128,.3); }
-  .identity-conf-badge.low  { background:rgba(121,121,121,.1);  color:#9d9d9d; border:1px solid rgba(121,121,121,.3); animation: riskPulse 2s infinite; }
-  .identity-conf-badge.med  { background:rgba(167,167,167,.1); color:#bfbfbf; border:1px solid rgba(167,167,167,.3); }
+  .identity-conf-badge.high { background:rgba(16,185,129,.1); color:#0a8a4a; border:1px solid rgba(16,185,129,.3); }
+  .identity-conf-badge.low  { background:rgba(223,27,65,.1);  color:#df1b41; border:1px solid rgba(223,27,65,.3); animation: riskPulse 2s infinite; }
+  .identity-conf-badge.med  { background:rgba(182,92,0,.1); color:#b65c00; border:1px solid rgba(182,92,0,.3); }
 
   /* ── LIVE ACTIONS PANEL ── */
   .risk-action-banner {
     border-radius: var(--radius-md); padding: 16px 18px; margin-bottom: 10px;
     display: flex; gap: 14px; align-items: flex-start; animation: fadeUp .35s ease;
   }
-  .risk-action-banner.danger  { background:rgba(121,121,121,.07);  border:1px solid rgba(121,121,121,.3); }
-  .risk-action-banner.warning { background:rgba(167,167,167,.07); border:1px solid rgba(167,167,167,.3); }
-  .risk-action-banner.info    { background:rgba(122,122,122,.07); border:1px solid rgba(122,122,122,.3); }
+  .risk-action-banner.danger  { background:rgba(223,27,65,.07);  border:1px solid rgba(223,27,65,.3); }
+  .risk-action-banner.warning { background:rgba(182,92,0,.07); border:1px solid rgba(182,92,0,.3); }
+  .risk-action-banner.info    { background:rgba(5,112,222,.07); border:1px solid rgba(5,112,222,.3); }
   .risk-action-banner .rab-icon { font-size:24px; flex-shrink:0; }
   .risk-action-banner .rab-label { font-weight:700; font-size:13px; margin-bottom:3px; }
   .risk-action-banner .rab-desc  { font-size:12px; color:var(--muted); margin-bottom:4px; line-height:1.5; }
@@ -668,35 +649,38 @@
 
 <div class="toast" id="toast"></div>
 
-
+<!-- RISK ACTION POPUP -->
+<div id="risk-popup-overlay">
+  <div class="risk-popup-box" id="risk-popup-box">
+    <div class="risk-popup-close" onclick="closeRiskPopup()"></div>
+    <div class="risk-popup-icon" id="rp-icon"></div>
+    <div class="risk-popup-title" id="rp-title">Risk Action Triggered</div>
+    <div class="risk-popup-ts" id="rp-ts"></div>
+    <div class="risk-popup-desc" id="rp-desc"></div>
+    <div class="risk-popup-props" id="rp-props"></div>
+    <button class="btn btn-primary" style="width:auto;padding:10px 24px;" onclick="closeRiskPopup()">Acknowledge →</button>
+</div>
+</div>
 
 <!-- RECOVERY OVERLAY -->
-<div id="recovery-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(12,12,12,.96);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;">
+<div id="recovery-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(10,12,16,.96);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:460px;text-align:center;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--danger),var(--accent));"></div>
-    <div style="font-size:40px;margin-bottom:10px;"></div>
-    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;margin-bottom:4px;">Account Recovery</div>
+    <div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;margin-bottom:4px;">Account Recovery</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:20px;" id="recovery-detail-text">Recovering your account…</div>
-    <div style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:20px;">
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Account Status</div>
-      <div style="font-size:16px;font-weight:700;color:var(--accent);" id="recovery-status-badge">Verifying…</div>
-    </div>
-    <div id="recovery-churn-badge" style="display:none;"></div>
-    <div id="recovery-churn-pct" style="display:none;"></div>
-    <div id="recovery-trust-badge" style="display:none;"></div>
     <div style="background:var(--surface2);border-radius:100px;height:12px;overflow:hidden;margin-bottom:16px;">
       <div id="recovery-bar-fill" style="height:100%;width:0%;border-radius:100px;transition:width .75s ease,background .75s ease;background:var(--danger);"></div>
-    </div>
-    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:36px;margin-bottom:4px;" id="recovery-pct-text">0%</div>
+</div>
+    <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:36px;margin-bottom:4px;" id="recovery-pct-text">0%</div>
     <div style="font-size:15px;font-weight:600;" id="recovery-status-text">Initiating…</div>
-  </div>
+</div>
 </div>
 
 <!-- EDIT PROFILE MODAL -->
 <div class="modal-overlay" id="edit-profile-modal">
   <div class="modal-box">
-    <div class="modal-close" onclick="closeEditModal()">✕</div>
-    <div class="modal-title"> Edit Profile</div>
+    <div class="modal-close" onclick="closeEditModal()"></div>
+    <div class="modal-title">Edit Profile</div>
     <div class="modal-sub">Update your personal and business details</div>
     <div class="form-grid">
       <div class="field"><label>First Name</label><input type="text" id="ep-fname" placeholder="John"/></div>
@@ -712,48 +696,47 @@
           <option>Retail</option><option>Wholesale</option><option>E-Commerce</option>
           <option>Manufacturing</option><option>Services</option><option>Import/Export</option><option>Other</option>
         </select>
-      </div>
+</div>
       <div class="field"><label>Monthly Income (₹)</label><input type="number" id="ep-income" placeholder="500000"/></div>
       <div class="field"><label>Country / Location</label>
         <select id="ep-country">
           <option value="">Select country…</option>
-          <option value="India"> India</option>
-          <option value="Brazil"> Brazil</option>
-          <option value="USA"> United States</option>
-          <option value="UK"> United Kingdom</option>
-          <option value="EU"> Europe (EU)</option>
-          <option value="Other"> Other</option>
+          <option value="India">India</option>
+          <option value="Brazil">Brazil</option>
+          <option value="USA">United States</option>
+          <option value="UK">United Kingdom</option>
+          <option value="EU">Europe (EU)</option>
+          <option value="Other">Other</option>
         </select>
-      </div>
-    </div>
+</div>
+</div>
     <div style="display:flex;gap:12px;margin-top:8px;">
       <button class="btn btn-secondary" style="flex:1;width:auto;" onclick="closeEditModal()">Cancel</button>
       <button class="btn btn-primary" style="flex:2;" onclick="saveEditProfile()">Save Changes ✓</button>
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 <!-- OTP STEP-UP AUTHENTICATION MODAL -->
 <div id="otp-modal-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;position:relative;overflow:hidden;text-align:center;animation:bounceIn .4s ease;">
-    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--danger),var(--warning));"></div>
-    <div style="font-size:48px;margin-bottom:12px;"></div>
-    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;color:var(--danger);">Step-Up Authentication</div>
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div>
+    <div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;margin-bottom:6px;color:var(--text);">Verify Your Identity</div>
     <div style="font-size:14px;color:var(--muted);margin-bottom:16px;">Enter the 6-digit OTP sent to your registered mobile number to proceed.</div>
     <div style="display:flex;gap:8px;margin-bottom:16px;">
       <input type="text" id="otp-input" maxlength="6" placeholder="_ _ _ _ _ _"
-        style="flex:1;background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;"
+        style="flex:1;background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:22px;font-weight:700;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;"
         oninput="this.value=this.value.replace(/\D/g,'')"
         onfocus="this.style.borderColor='var(--accent)'"
         onblur="this.style.borderColor='var(--border)'"/>
-    </div>
+</div>
     <div id="otp-error" style="color:var(--danger);font-size:13px;margin-bottom:10px;display:none;"></div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-secondary" style="flex:1;width:auto;padding:12px;" onclick="closeOtpModal()">Cancel</button>
       <button class="btn btn-primary" style="flex:2;padding:12px;" onclick="verifyOtp()">Verify OTP ✓</button>
-    </div>
+</div>
     <div style="margin-top:14px;font-size:12px;color:var(--muted);">Demo OTP: <strong style="color:var(--accent);letter-spacing:2px;">123456</strong></div>
-  </div>
+</div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -772,8 +755,8 @@
       <div class="err-msg" id="su-err"></div>
       <button class="btn btn-primary mt-4" onclick="doSignup()">Create Account</button>
       <div class="auth-switch">Already have an account? <a onclick="showPage('page-login')">Sign In</a></div>
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 <!-- PAGE 2: LOGIN -->
@@ -788,8 +771,8 @@
       <div class="err-msg" id="li-err"></div>
       <button class="btn btn-primary mt-4" onclick="doLogin()">Sign In</button>
       <div class="auth-switch">Don't have an account? <a onclick="showPage('page-signup')">Sign Up</a></div>
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 <!-- PAGE 3: ONBOARDING 1 -->
@@ -798,21 +781,21 @@
     <div class="onboard-header">
       <div class="brand"><div class="brand-icon">C</div><div class="brand-name">CRUDPAY</div></div>
       <button class="btn btn-ghost btn-sm" onclick="skipOnboarding()">Skip for now →</button>
-    </div>
+</div>
     <div class="progress-bar-wrap">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
         <span style="font-size:12px;color:var(--muted);">Onboarding Progress</span>
         <span id="ob1-pct" style="font-size:12px;color:var(--accent);">0%</span>
-      </div>
+</div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="ob1-bar" style="width:0%"></div></div>
-    </div>
+</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
       <div class="step-dot active" id="sd1">1</div>
       <div class="step-line" id="sl1"></div>
       <div class="step-dot" id="sd2">2</div>
       <div class="step-line" id="sl2"></div>
       <div class="step-dot" id="sd3">3</div>
-    </div>
+</div>
     <div class="onboard-card">
       <div class="onboard-title">Personal Details</div>
       <div class="onboard-sub">Tell us about yourself — you can always update this later.</div>
@@ -830,26 +813,26 @@
             <option>Retail</option><option>Wholesale</option><option>E-Commerce</option>
             <option>Manufacturing</option><option>Services</option><option>Import/Export</option><option>Other</option>
           </select>
-        </div>
+</div>
         <div class="field"><label>Monthly Income (₹)</label><input type="number" id="ob-income" placeholder="500000" oninput="updateOb1Progress()"/></div>
         <div class="field form-full"><label>Country / Location</label>
           <select id="ob-country" onchange="updateOb1Progress(); _onboardingLocationChange(this.value)">
             <option value="">Select your country…</option>
-            <option value="India"> India</option>
-            <option value="Brazil"> Brazil</option>
-            <option value="USA"> United States</option>
-            <option value="UK"> United Kingdom</option>
-            <option value="EU"> Europe (EU)</option>
-            <option value="Other"> Other</option>
+            <option value="India">India</option>
+            <option value="Brazil">Brazil</option>
+            <option value="USA">United States</option>
+            <option value="UK">United Kingdom</option>
+            <option value="EU">Europe (EU)</option>
+            <option value="Other">Other</option>
           </select>
-        </div>
-      </div>
+</div>
+</div>
       <div class="onboard-nav">
         <span class="progress-text">Step 1 of 2 — Personal Details</span>
         <button class="btn btn-primary" style="width:auto;padding:12px 28px;" onclick="goToDocuments()">Next →</button>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 <!-- PAGE 4: ONBOARDING 2 -->
@@ -858,30 +841,30 @@
     <div class="onboard-header">
       <div class="brand"><div class="brand-icon">C</div><div class="brand-name">CRUDPAY</div></div>
       <button class="btn btn-ghost btn-sm" onclick="skipOnboarding()">Skip for now →</button>
-    </div>
+</div>
     <div class="progress-bar-wrap">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
         <span style="font-size:12px;color:var(--muted);">Onboarding Progress</span>
         <span id="ob2-pct" style="font-size:12px;color:var(--accent);">50%</span>
-      </div>
+</div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="ob2-bar" style="width:50%"></div></div>
-    </div>
+</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
       <div class="step-dot done">✓</div>
       <div class="step-line done"></div>
       <div class="step-dot active">2</div>
       <div class="step-line"></div>
       <div class="step-dot">3</div>
-    </div>
+</div>
     <div class="onboard-card">
       <div class="onboard-title">Business Documents</div>
       <div class="onboard-sub">Upload your KYC and business verification documents. All files are encrypted and secure.</div>
       <div class="doc-grid" id="doc-grid"></div>
 
       <!-- KYC VERIFICATION BLOCK (NEW) -->
-      <div style="margin-top:24px;padding:20px;background:rgba(144,144,144,.04);border:1px solid rgba(144,144,144,.15);border-radius:14px;">
-        <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;"> KYC Verification</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Enter your government ID details.</div>
+      <div style="margin-top:24px;padding:20px;background:rgba(99,91,255,.04);border:1px solid rgba(99,91,255,.15);border-radius:14px;">
+        <div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;">KYC Verification</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Enter your government ID details. Stored locally — no backend required.</div>
         <div class="form-grid">
           <div class="field">
             <label>ID Type</label>
@@ -892,30 +875,30 @@
               <option value="passport">Passport</option>
               <option value="driving">Driving Licence</option>
             </select>
-          </div>
+</div>
           <div class="field">
             <label>ID Number</label>
             <input type="text" id="kyc-id-number" placeholder="e.g. ABCDE1234F" maxlength="20"/>
-          </div>
+</div>
           <div class="field form-full">
             <label>Full Name (as on ID)</label>
             <input type="text" id="kyc-full-name" placeholder="Name on your government ID"/>
-          </div>
-        </div>
+</div>
+</div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
           <input type="checkbox" id="kyc-consent" style="width:16px;height:16px;accent-color:var(--accent);">
           <label for="kyc-consent" style="font-size:13px;color:var(--muted);cursor:pointer;">I confirm these details are accurate and consent to KYC verification.</label>
-        </div>
+</div>
         <div id="kyc-status" style="margin-top:10px;font-size:13px;display:none;"></div>
-      </div>
+</div>
       <!-- END KYC BLOCK -->
 
       <div class="onboard-nav">
         <button class="btn btn-secondary" style="width:auto;padding:12px 28px;" onclick="showPage('page-onboard1')">← Back</button>
         <button class="btn btn-primary" style="width:auto;padding:12px 28px;" onclick="finishOnboarding()">Complete Onboarding →</button>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 <!-- PAGE 5: DASHBOARD -->
@@ -923,25 +906,25 @@
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="brand"><div class="brand-icon">C</div><div class="brand-name">CRUDPAY</div></div>
-      <span style="cursor:pointer;color:var(--muted);font-size:18px;line-height:1;" onclick="closeSidebar()">✕</span>
-    </div>
+      <span style="cursor:pointer;color:var(--muted);font-size:18px;line-height:1;" onclick="closeSidebar()"></span>
+</div>
     <div class="sidebar-nav">
       <div class="nav-section-label">Main</div>
-      <div class="nav-item active" onclick="switchView('overview')"><span class="ni"></span> Overview</div>
-      <div class="nav-item" onclick="switchView('profile')"><span class="ni"></span> My Profile</div>
-      <div class="nav-item" onclick="switchView('send')"><span class="ni"></span> Send Payment</div>
-      <div class="nav-item" onclick="switchView('transactions')"><span class="ni"></span> Transactions</div>
+      <div class="nav-item active" onclick="switchView('overview')">Overview</div>
+      <div class="nav-item" onclick="switchView('profile')">My Profile</div>
+      <div class="nav-item" onclick="switchView('send')">Send Payment</div>
+      <div class="nav-item" onclick="switchView('transactions')">Transactions</div>
       <div class="nav-section-label">Compliance</div>
-      <div class="nav-item" onclick="switchView('alert')"><span class="ni"></span> Alerts &amp; Support</div>
-      <div class="nav-item" onclick="switchView('documents')"><span class="ni"></span> Documents</div>
+      <div class="nav-item" onclick="switchView('alert')">Alerts &amp; Support</div>
+      <div class="nav-item" onclick="switchView('documents')">Documents</div>
       <div class="nav-section-label">Settings</div>
-      <div class="nav-item" onclick="openEditModal()"><span class="ni"></span> Edit Profile</div>
-      <div class="nav-item" onclick="showPage('page-onboard1')"><span class="ni"></span> Edit Onboarding</div>
-    </div>
+      <div class="nav-item" onclick="openEditModal()">Edit Profile</div>
+      <div class="nav-item" onclick="showPage('page-onboard1')">Edit Onboarding</div>
+</div>
     <div class="sidebar-footer">
-      <div class="nav-item" onclick="doLogout()" style="color:var(--danger);"><span class="ni"></span> Sign Out</div>
-    </div>
-  </div>
+      <div class="nav-item" onclick="doLogout()" style="color:var(--danger);">Sign Out</div>
+</div>
+</div>
 
   <div class="dash-main">
     <div class="topbar">
@@ -951,71 +934,147 @@
         <div class="topbar-badge" id="topbar-time" style="display:none;"></div>
         <span style="font-size:11px;color:var(--muted);display:none;" id="topbar-live-label">LIVE</span>
         <div class="avatar" id="topbar-avatar" title="Your account">M</div>
-      </div>
-    </div>
+</div>
+</div>
 
     <div class="dash-content">
       <div class="dash-views">
 
         <!-- OVERVIEW VIEW -->
         <div id="view-overview" class="active">
-          <div class="kpi-grid" id="kpi-grid"></div>
           <div class="dash-section">
-            <div class="section-title"> Merchant Snapshot</div>
+            <div class="section-title">Merchant Snapshot</div>
             <div class="profile-card" id="snapshot-card"></div>
-          </div>
+</div>
+          <!-- PAYMENT QUICK ACTIONS PANEL (replaces Session Activity) -->
           <div class="dash-section">
-            <div class="section-title"> Onboarding Progress</div>
-            <div class="profile-card">
-              <div id="ob-progress-display"></div>
-              <button class="btn btn-secondary btn-sm mt-4" onclick="showPage('page-onboard1')">Continue Onboarding</button>
+            <div class="section-title">Payment Center</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" id="pay-center-grid">
+
+              <!-- Secure Checkout Card -->
+              <div class="profile-card" style="margin-bottom:0;border-left:4px solid var(--accent);padding:20px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                  <div style="width:36px;height:36px;border-radius:8px;background:rgba(99,91,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-weight:700;font-size:14px;">Secure Payments</div>
+                    <div style="font-size:11px;color:var(--muted);">256-bit TLS encryption</div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    PCI DSS Compliant
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    3D Secure Authenticated
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    Real-time Fraud Detection
+                  </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px;padding:10px 18px;font-size:13px;" onclick="switchView('send')">New Payment</button>
+              </div>
+
+              <!-- Recent Transaction Summary Card -->
+              <div class="profile-card" style="margin-bottom:0;padding:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-weight:700;font-size:14px;">Last Transaction</div>
+                  <button onclick="switchView('transactions')" style="background:none;border:none;font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;">View all</button>
+                </div>
+                <div id="pay-center-last-txn">
+                  <div style="font-size:13px;color:var(--muted);padding:16px 0;text-align:center;border:1px dashed var(--border);border-radius:8px;">No transactions yet.<br><span style="font-size:12px;">Send your first payment to get started.</span></div>
+                </div>
+              </div>
+
             </div>
-          </div>
-          <div class="dash-section">
-            <div class="section-title">⏱ Session Activity</div>
-            <div class="profile-card" id="session-live-panel" style="min-height:80px;">
-              <div style="font-size:13px;color:var(--muted);">Session data will appear here after login.</div>
-            </div>
-          </div>
-          <div class="dash-section">
-            <div class="section-title"> About CRUDPAY</div>
+
+            <!-- Order Summary / Quick Pay Widget -->
             <div class="profile-card" style="padding:0;overflow:hidden;">
-              <div style="background:linear-gradient(135deg,#1d1d1d 0%,#181818 100%);padding:28px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;">
-                <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;color:#ffffff;flex-shrink:0;">C</div>
+              <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-weight:700;font-size:14px;">Payment Summary</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--success);font-weight:600;">
+                  <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 1.5s infinite;"></span>
+                  LIVE
+                </div>
+              </div>
+              <div style="padding:20px 24px;" id="pay-center-summary">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px;" id="pay-center-kpis">
+                  <div style="background:var(--surface2);border-radius:8px;padding:14px;">
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;font-weight:600;">Total Sent</div>
+                    <div style="font-weight:700;font-size:20px;" id="pc-total-sent">₹0</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="pc-txn-count">0 transactions</div>
+                  </div>
+                  <div style="background:var(--surface2);border-radius:8px;padding:14px;">
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;font-weight:600;">Success Rate</div>
+                    <div style="font-weight:700;font-size:20px;color:var(--success);" id="pc-success-rate">—</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Last 30 days</div>
+                  </div>
+                  <div style="background:var(--surface2);border-radius:8px;padding:14px;">
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;font-weight:600;">Pending</div>
+                    <div style="font-weight:700;font-size:20px;color:var(--warning);" id="pc-pending-count">0</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Awaiting settlement</div>
+                  </div>
+                  <div style="background:var(--surface2);border-radius:8px;padding:14px;">
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;font-weight:600;">Avg Amount</div>
+                    <div style="font-weight:700;font-size:20px;" id="pc-avg-amount">—</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Per transaction</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(99,91,255,.05);border:1px solid rgba(99,91,255,.15);border-radius:8px;font-size:12px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span style="color:var(--text-2);">All transactions are protected by CRUDPAY's AML screening and real-time risk monitoring.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END PAYMENT CENTER -->
+          <div class="dash-section">
+            <div class="section-title">About CRUDPAY</div>
+            <div class="profile-card" style="padding:0;overflow:hidden;">
+              <div style="background:linear-gradient(135deg,rgba(99,91,255,.06) 0%,rgba(5,112,222,.04) 100%);padding:28px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;">
+                <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:800;font-size:22px;color:#fff;flex-shrink:0;">C</div>
+                <div>
+                  <div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:20px;">CRUDPAY</div>
+                  <div style="font-size:13px;color:var(--muted);margin-top:2px;">Unified Merchant Intelligence Platform</div>
+</div>
                 <div style="margin-left:auto;text-align:right;">
                   <div style="font-size:11px;color:var(--muted);">Platform Status</div>
                   <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
                     <span style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 1.5s infinite;"></span>
                     <span style="font-size:13px;font-weight:600;color:var(--success);">All Systems Operational</span>
-                  </div>
-                </div>
-              </div>
+</div>
+</div>
+</div>
               <div style="padding:24px 28px;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
-                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--accent);"><div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;color:var(--accent);">12K+</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Active Merchants</div></div>
-                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--accent2);"><div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;color:var(--accent2);">₹480Cr</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">GMV Processed</div></div>
-                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--success);"><div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;color:var(--success);">99.9%</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Uptime SLA</div></div>
-                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--warning);"><div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;color:var(--warning);">&lt;2hr</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Avg Support SLA</div></div>
-                </div>
-                <div style="margin-bottom:20px;padding:16px;background:rgba(144,144,144,.05);border:1px solid rgba(144,144,144,.15);border-radius:12px;">
+                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--accent);"><div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;color:var(--accent);">12K+</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Active Merchants</div></div>
+                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--accent2);"><div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;color:var(--accent2);">₹480Cr</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">GMV Processed</div></div>
+                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--success);"><div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;color:var(--success);">99.9%</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Uptime SLA</div></div>
+                  <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center;border-top:2px solid var(--warning);"><div style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;color:var(--warning);">&lt;2hr</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Avg Support SLA</div></div>
+</div>
+                <div style="margin-bottom:20px;padding:16px;background:rgba(99,91,255,.05);border:1px solid rgba(99,91,255,.15);border-radius:12px;">
                   <div style="font-size:13px;color:var(--text);line-height:1.7;">CRUDPAY is India's leading merchant onboarding and intelligence platform, trusted by over 12,000 businesses. We streamline KYC verification, business activation, real-time risk monitoring, and fraud prevention — all in one place.</div>
-                </div>
-                <div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:16px;border-top:1px solid var(--border);">
-                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"> <span style="color:var(--accent);font-weight:500;">www.crudpay.in</span></div>
-                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"> <span>support@crudpay.in</span></div>
-                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"> <span>Chennai · Mumbai · Bengaluru</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+</div>
+                <div style="display:flex;flex-wrap:wrap;gap:14px;padding-top:16px;border-top:1px solid var(--border);">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"><span style="color:var(--accent);font-weight:500;">www.crudpay.in</span></div>
+                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"><span>support@crudpay.in</span></div>
+                  <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);"><span>Chennai · Mumbai · Bengaluru</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
         <!-- PROFILE VIEW -->
         <div id="view-profile">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-            <div class="section-title" style="margin-bottom:0;"> Merchant Profile</div>
-            <button class="btn btn-secondary btn-sm" onclick="openEditModal()"> Edit Profile</button>
-          </div>
+            <div class="section-title" style="margin-bottom:0;">Merchant Profile</div>
+            <button class="btn btn-secondary btn-sm" onclick="openEditModal()">Edit Profile</button>
+</div>
           <div class="profile-card">
             <div class="profile-header">
               <div class="profile-avatar" id="p-avatar">M</div>
@@ -1023,95 +1082,246 @@
                 <div class="profile-name" id="p-name">—</div>
                 <div class="profile-id" id="p-mid">MID: —</div>
                 <div id="p-status-badge"></div>
-              </div>
-            </div>
+</div>
+</div>
             <div class="profile-grid" id="profile-grid"></div>
-          </div>
-        </div>
+</div>
+</div>
 
         <!-- ALERT VIEW -->
         <div id="view-alert">
-          <div class="section-title"> Alert &amp; Support</div>
+          <div class="section-title">Alert &amp; Support</div>
           <div class="alert-wrap">
             <div class="alert-panel">
-              <div class="alert-panel-title"> Contact Support Team</div>
-              <div class="compose-field"><label>To</label><input type="text" value="support@crudpay.in" readonly style="opacity:.6;" /></div>
+              <div class="alert-panel-title">Contact Support Team</div>
+              <div class="compose-field"><label>To</label><input type="text" value="angel27angee@gmail.com" readonly style="opacity:.6;" /></div>
               <div class="compose-field"><label>Subject</label><input type="text" id="mail-subject" placeholder="Describe your issue briefly…" /></div>
               <div class="compose-field"><label>Message</label><textarea id="mail-body" placeholder="Write your message here. Include your Merchant ID for faster resolution…"></textarea></div>
               <button class="btn btn-primary" onclick="sendSupportEmail()">Send to Support Team</button>
               <div class="success-msg" id="mail-success">✓ Your email app has opened with the draft ready — just hit Send!</div>
-            </div>
+</div>
             <div class="alert-panel" style="max-width:340px;">
-              <div class="alert-panel-title"> Support Notifications</div>
+              <div class="alert-panel-title">Support Notifications</div>
               <div class="notification-list" id="notif-list">
                 <div class="notif-item">
                   <div class="ni-header"><span class="ni-name">Support Bot</span><span class="ni-time">Just now</span></div>
                   <div class="ni-msg">Welcome! Our support team is available Mon–Sat, 9AM–6PM IST.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
         <!-- DOCUMENTS VIEW -->
         <div id="view-documents">
-          <div class="section-title"> My Documents</div>
+          <div class="section-title">My Documents</div>
           <div class="profile-card">
             <div id="docs-display"></div>
             <button class="btn btn-secondary btn-sm mt-4" onclick="showPage('page-onboard2')">Upload / Update Documents</button>
-          </div>
-        </div>
+</div>
+</div>
 
-        <!-- ══════════════════════════════════════
-             IDENTITY & TRUST VIEW (Unified Identity, Trust Score, Escrow Outcome)
-        ══════════════════════════════════════ -->
-                <!-- SEND PAYMENT VIEW -->
+        <!-- SEND PAYMENT VIEW -->
         <div id="view-send">
           <div id="sp-step-new">
-            <div style="max-width:580px;">
-              <div class="section-title"> New Payment</div>
-              <div class="field">
-                <label>Payment Corridor</label>
-                <select id="sp-corridor" onchange="onCorridorChange()">
-                  <option value="INR-USD"> INR →  USD</option>
-                  <option value="INR-EUR"> INR →  EUR</option>
-                  <option value="INR-BRL"> INR →  BRL</option>
-                  <option value="INR-GBP"> INR →  GBP</option>
-                  <option value="USD-INR"> USD →  INR</option>
-                  <option value="USD-BRL"> USD →  BRL</option>
-                </select>
+            <div style="max-width:680px;">
+
+              <!-- Checkout header -->
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+                <div>
+                  <div class="section-title" style="margin-bottom:2px;">Secure Checkout</div>
+                  <div style="font-size:13px;color:var(--muted);">Complete your cross-border payment below.</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(10,138,74,.08);border:1px solid rgba(10,138,74,.2);border-radius:8px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span style="font-size:12px;font-weight:700;color:var(--success);">Secure Payment</span>
+                </div>
               </div>
-              <div class="form-grid" style="gap:16px;">
-                <div class="field"><label>Amount (<span id="sp-currency-label">₹</span>)</label><input type="number" id="sp-amount" placeholder="e.g. 20000" min="1" oninput="onAmountInput()" /></div>
-                <div class="field"><label>Recipient</label><input type="text" id="sp-recipient" placeholder="Vendor / Customer name" oninput="onRecipientInput()" /></div>
-              </div>
-              <div id="sp-persona-banner" style="display:none;margin-bottom:16px;padding:14px 16px;border-radius:10px;font-size:13px;border:1px solid;"></div>
-              <div id="sp-recommendation" style="display:none;margin-bottom:20px;padding:14px 16px;background:rgba(122,122,122,.09);border:1px solid rgba(122,122,122,.28);border-radius:10px;font-size:13px;color:var(--accent2);">
-                <span></span> <span id="sp-rec-text"></span>
-              </div>
-              <div style="margin-bottom:8px;"><label style="font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Payment Method</label></div>
-              <div id="sp-methods-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;"></div>
-              <div id="sp-err" class="err-msg"></div>
-              <button class="btn btn-primary" style="width:auto;padding:13px 36px;" onclick="spGoReview()">Review Payment →</button>
+
+              <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;" id="sp-checkout-grid">
+
+                <!-- LEFT: Payment form -->
+                <div>
+                  <!-- Order Details -->
+                  <div class="profile-card" style="margin-bottom:16px;padding:20px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:16px;">Transfer Details</div>
+                    <div class="field" style="margin-bottom:14px;">
+                      <label>Payment Corridor</label>
+                      <select id="sp-corridor" onchange="onCorridorChange()">
+                        <option value="INR-USD">INR → USD</option>
+                        <option value="INR-EUR">INR → EUR</option>
+                        <option value="INR-BRL">INR → BRL</option>
+                        <option value="INR-GBP">INR → GBP</option>
+                        <option value="USD-INR">USD → INR</option>
+                        <option value="USD-BRL">USD → BRL</option>
+                      </select>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                      <div class="field" style="margin-bottom:0;"><label>Amount (<span id="sp-currency-label">₹</span>)</label><input type="number" id="sp-amount" placeholder="e.g. 20000" min="1" oninput="onAmountInput()" /></div>
+                      <div class="field" style="margin-bottom:0;"><label>Recipient</label><input type="text" id="sp-recipient" placeholder="Vendor / Customer name" oninput="onRecipientInput()" /></div>
+                    </div>
+                  </div>
+
+                  <!-- Intelligence banners (kept from backend) -->
+                  <div id="sp-persona-banner" style="display:none;margin-bottom:12px;padding:12px 16px;border-radius:8px;font-size:13px;border:1px solid;"></div>
+                  <div id="sp-recommendation" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(5,112,222,.08);border:1px solid rgba(5,112,222,.2);border-radius:8px;font-size:13px;color:var(--accent2);">
+                    <span></span> <span id="sp-rec-text"></span>
+                  </div>
+
+                  <!-- Payment Method -->
+                  <div class="profile-card" style="margin-bottom:16px;padding:20px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;">Payment Method</div>
+                    <div id="sp-methods-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+                  </div>
+
+                  <!-- Error -->
+                  <div id="sp-err" class="err-msg"></div>
+
+                  <!-- CTA -->
+                  <button class="btn btn-primary" style="width:100%;padding:15px 24px;font-size:15px;font-weight:700;border-radius:10px;box-shadow:0 4px 16px rgba(99,91,255,.25);" onclick="spGoReview()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Review Payment
+                  </button>
+
+                  <!-- Trust badges -->
+                  <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      256-bit SSL
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      PCI DSS
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      AML Screened
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      Instant Settlement
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RIGHT: Order Summary panel -->
+                <div>
+                  <div class="profile-card" style="padding:20px;margin-bottom:0;position:sticky;top:76px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:16px;">Order Summary</div>
+
+                    <!-- Product/service row -->
+                    <div style="padding:14px;background:var(--surface2);border-radius:8px;margin-bottom:16px;">
+                      <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;font-size:16px;color:#fff;">C</div>
+                        <div style="flex:1;min-width:0;">
+                          <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="sp-summary-recipient">—</div>
+                          <div style="font-size:11px;color:var(--muted);margin-top:1px;" id="sp-summary-corridor">Cross-border Transfer</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Amount breakdown -->
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;">
+                        <span style="color:var(--muted);">Transfer amount</span>
+                        <span id="sp-summary-amount" style="font-weight:600;">—</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;">
+                        <span style="color:var(--muted);">Transaction fee</span>
+                        <span id="sp-summary-fee" style="font-weight:600;">—</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;font-size:13px;">
+                        <span style="color:var(--muted);">Payment method</span>
+                        <span id="sp-summary-method" style="font-weight:600;">—</span>
+                      </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                      <span style="font-size:14px;font-weight:700;">Total</span>
+                      <span id="sp-summary-total" style="font-size:20px;font-weight:800;color:var(--accent);">—</span>
+                    </div>
+
+                    <!-- Secure note -->
+                    <div style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:rgba(10,138,74,.07);border:1px solid rgba(10,138,74,.18);border-radius:8px;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      <span style="font-size:11px;color:var(--success);line-height:1.6;">Payment secured and AML-screened by CRUDPAY.</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /sp-checkout-grid -->
             </div>
           </div>
           <div id="sp-step-review" style="display:none;">
-            <div style="max-width:520px;">
-              <div class="section-title"> Review Payment</div>
-              <div class="profile-card" style="padding:24px;margin-bottom:20px;"><div id="sp-review-rows"></div></div>
+            <div style="max-width:560px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+                <div>
+                  <div class="section-title" style="margin-bottom:2px;">Review &amp; Confirm</div>
+                  <div style="font-size:13px;color:var(--muted);">Please verify your payment details before confirming.</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(10,138,74,.08);border:1px solid rgba(10,138,74,.2);border-radius:8px;font-size:12px;font-weight:700;color:var(--success);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Secure
+                </div>
+              </div>
+
+              <!-- Review card -->
+              <div class="profile-card" style="padding:0;overflow:hidden;margin-bottom:16px;">
+                <div style="padding:16px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);">Transaction Summary</span>
+                </div>
+                <div style="padding:20px;" id="sp-review-rows"></div>
+              </div>
+
+              <!-- Auth / security note -->
+              <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;background:rgba(5,112,222,.06);border:1px solid rgba(5,112,222,.18);border-radius:8px;margin-bottom:20px;font-size:13px;color:var(--accent2);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                By confirming, you authorise this payment and agree to CRUDPAY's transaction terms. High-risk transactions may require additional verification.
+              </div>
+
               <div style="display:flex;gap:12px;">
-                <button class="btn btn-secondary" style="flex:1;" onclick="spBack()">← Edit</button>
-                <button class="btn btn-primary" style="flex:2;" onclick="spConfirm()">Confirm &amp; Send →</button>
+                <button class="btn btn-secondary" style="flex:1;" onclick="spBack()">Edit Details</button>
+                <button class="btn btn-primary" style="flex:2;padding:14px 24px;font-size:15px;font-weight:700;" onclick="spConfirm()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Confirm &amp; Send
+                </button>
               </div>
             </div>
           </div>
           <div id="sp-step-success" style="display:none;">
-            <div style="max-width:480px;text-align:center;">
-              <div style="font-size:56px;margin-bottom:16px;animation:bounceIn .5s;"></div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:26px;color:var(--success);margin-bottom:8px;">Payment Sent!</div>
-              <div style="font-size:14px;color:var(--muted);margin-bottom:28px;" id="sp-success-msg"></div>
-              <div class="profile-card" style="padding:20px;margin-bottom:20px;text-align:left;" id="sp-success-detail"></div>
-              <button class="btn btn-primary" style="width:auto;padding:13px 32px;" onclick="spReset()">Send Another Payment</button>
+            <div style="max-width:520px;">
+
+              <!-- Success header -->
+              <div style="text-align:center;padding:32px 24px 24px;">
+                <div style="width:72px;height:72px;border-radius:50%;background:rgba(10,138,74,.1);border:2px solid rgba(10,138,74,.25);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div style="font-weight:800;font-size:28px;color:var(--success);margin-bottom:6px;letter-spacing:-.01em;">Payment Successful</div>
+                <div style="font-size:14px;color:var(--muted);line-height:1.6;" id="sp-success-msg"></div>
+              </div>
+
+              <!-- Transaction detail card -->
+              <div class="profile-card" style="padding:0;overflow:hidden;margin-bottom:16px;">
+                <div style="padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-2);">Transaction Receipt</span>
+                </div>
+                <div style="padding:20px;" id="sp-success-detail"></div>
+              </div>
+
+              <!-- Actions -->
+              <div style="display:flex;gap:12px;margin-bottom:16px;">
+                <button class="btn btn-secondary" style="flex:1;" onclick="switchView('transactions')">View Transactions</button>
+                <button class="btn btn-primary" style="flex:1;" onclick="spReset()">New Payment</button>
+              </div>
+
+              <!-- Secure note -->
+              <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Secured by CRUDPAY · 256-bit TLS · PCI DSS Compliant
+              </div>
             </div>
           </div>
         </div>
@@ -1119,16 +1329,16 @@
         <!-- TRANSACTIONS VIEW -->
         <div id="view-transactions">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-            <div class="section-title" style="margin-bottom:0;"> Transactions</div>
+            <div class="section-title" style="margin-bottom:0;">Transactions</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <select id="txn-filter-status" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Poppins',sans-serif;font-size:13px;outline:none;">
+              <select id="txn-filter-status" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
                 <option value="">All Status</option><option value="Success">Success</option><option value="Pending">Pending</option><option value="Failed">Failed</option><option value="Refunded">Refunded</option>
               </select>
-              <select id="txn-filter-method" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Poppins',sans-serif;font-size:13px;outline:none;">
+              <select id="txn-filter-method" onchange="renderTransactions()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
                 <option value="">All Methods</option><option value="UPI">UPI</option><option value="Card">Card</option><option value="NEFT/IMPS">NEFT/IMPS</option><option value="PIX">PIX</option><option value="SOFORT">SOFORT</option><option value="Wallet">Wallet</option>
               </select>
-            </div>
-          </div>
+</div>
+</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:24px;" id="txn-kpi-row"></div>
           <div class="profile-card" style="padding:0;overflow:hidden;">
             <div style="overflow-x:auto;">
@@ -1147,56 +1357,141 @@
                 </thead>
                 <tbody id="txn-tbody"></tbody>
               </table>
-            </div>
-          </div>
-        </div>
+</div>
+</div>
+</div>
 
         <!-- ══════════════════════════════════════
              RISK MONITOR VIEW (Live Tracking)
         ══════════════════════════════════════ -->
         <div id="view-risk-monitor" style="display:none;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-            <div class="section-title" style="margin-bottom:0;"> Real-Time Risk &amp; Fraud Monitor</div>
+            <div class="section-title" style="margin-bottom:0;">Real-Time Risk &amp; Fraud Monitor</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="btn btn-secondary btn-sm" onclick="simulateTransaction()"> Simulate Transaction</button>
-              <button class="btn btn-secondary btn-sm" onclick="simulateDeviceChange()"> Simulate Device Change</button>
-            </div>
-          </div>
+              <button class="btn btn-secondary btn-sm" onclick="simulateTransaction()">Simulate Transaction</button>
+              <button class="btn btn-secondary btn-sm" onclick="simulateDeviceChange()">Simulate Device Change</button>
+</div>
+</div>
 
           <!-- DEVICE & LOCATION INDICATOR PILLS -->
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
-            <div id="rm-device-indicator" class="rm-indicator-pill green"> Device Stable</div>
-            <div id="rm-location-indicator" class="rm-indicator-pill green"> Location Trusted</div>
+            <div id="rm-device-indicator" class="rm-indicator-pill green">Device Stable</div>
+            <div id="rm-location-indicator" class="rm-indicator-pill green">Location Trusted</div>
             <div id="rm-identity-indicator" class="identity-conf-badge high" style="margin-left:auto;">
               <span id="rm-identity-icon"></span>
               <span>Identity Confidence: <span id="rm-identity-conf-val">HIGH</span></span>
-            </div>
-          </div>
+</div>
+</div>
 
           <!-- LOCATION EDITOR -->
           <div class="profile-card" style="padding:20px;margin-bottom:20px;border-left:4px solid var(--accent2);">
-            <div style="font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;"> Location Control <span id="loc-badge" style="font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(128,128,128,.15);color:var(--success);font-weight:600;">TRUSTED</span></div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;">Location Control <span id="loc-badge" style="font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(16,185,129,.15);color:var(--success);font-weight:600;">TRUSTED</span></div>
             <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
               <div style="flex:1;min-width:180px;">
                 <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">Current Location</label>
-                <select id="rm-location-select" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Poppins',sans-serif;font-size:14px;outline:none;">
-                  <option value="India"> India (Trusted)</option>
-                  <option value="USA"> United States (Trusted)</option>
-                  <option value="UK"> United Kingdom (Trusted)</option>
-                  <option value="Nigeria"> Nigeria (High-Risk)</option>
-                  <option value="Pakistan"> Pakistan (High-Risk)</option>
-                  <option value="Iran"> Iran (FATF Blacklist)</option>
-                  <option value="North Korea"> North Korea (Sanctioned)</option>
+                <select id="rm-location-select" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+                  <option value="India">India (Trusted)</option>
+                  <option value="USA">United States (Trusted)</option>
+                  <option value="UK">United Kingdom (Trusted)</option>
+                  <option value="Nigeria">Nigeria (High-Risk)</option>
+                  <option value="Pakistan">Pakistan (High-Risk)</option>
+                  <option value="Iran">Iran (FATF Blacklist)</option>
+                  <option value="North Korea">North Korea (Sanctioned)</option>
                 </select>
-              </div>
+</div>
               <button class="btn btn-secondary btn-sm" style="padding:10px 18px;" onclick="updateLocation()">Update Location</button>
-            </div>
+</div>
             <div id="rm-location-status" style="margin-top:10px;font-size:12px;color:var(--muted);">Current: India — No risk signals from location.</div>
-          </div>
+</div>
 
           <!-- RISK KPI ROW -->
-      </div>
-  </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:20px;" id="rm-kpi-row">
+            <div class="kpi-card" style="--accent-c:var(--accent2);">
+              <div class="kpi-label">Risk Score</div>
+              <div class="kpi-val" id="rm-score-val" style="color:var(--success);">0.00</div>
+              <div class="kpi-sub">Live score</div>
+</div>
+            <div class="kpi-card" style="--accent-c:var(--accent);">
+              <div class="kpi-label">Identity Confidence</div>
+              <div class="kpi-val" id="rm-identity-val" style="color:var(--success);font-size:18px;">HIGH</div>
+              <div class="kpi-sub">Behavioral signal</div>
+</div>
+            <div class="kpi-card" style="--accent-c:var(--warning);">
+              <div class="kpi-label">Txn Velocity (5m)</div>
+              <div class="kpi-val" id="rm-velocity-val" style="color:var(--success);">0</div>
+              <div class="kpi-sub" id="rm-velocity-sub">Safe — threshold: 10</div>
+</div>
+            <div class="kpi-card" style="--accent-c:var(--danger);">
+              <div class="kpi-label">Active Signals</div>
+              <div class="kpi-val" id="rm-signals-val" style="color:var(--success);">0</div>
+              <div class="kpi-sub">Risk indicators</div>
+</div>
+</div>
+
+          <!-- RISK SIGNAL INDICATORS (color-coded) -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:20px;" id="rm-signal-cards">
+            <div class="risk-signal-card success" id="rmc-location">
+              <div class="risk-signal-icon"></div>
+              <div>
+                <div class="risk-signal-label">Location</div>
+                <div class="risk-signal-val" style="color:var(--success);">India — Trusted</div>
+                <div class="risk-signal-sub">No location anomaly</div>
+</div>
+</div>
+            <div class="risk-signal-card success" id="rmc-velocity">
+              <div class="risk-signal-icon"></div>
+              <div>
+                <div class="risk-signal-label">Transaction Velocity</div>
+                <div class="risk-signal-val" style="color:var(--success);">Normal</div>
+                <div class="risk-signal-sub">0 transactions in last 5 min</div>
+</div>
+</div>
+            <div class="risk-signal-card success" id="rmc-device">
+              <div class="risk-signal-icon"></div>
+              <div>
+                <div class="risk-signal-label">Device</div>
+                <div class="risk-signal-val" style="color:var(--success);" id="rmc-device-val">No Change</div>
+                <div class="risk-signal-sub" id="rmc-device-sub">Same trusted device</div>
+</div>
+</div>
+            <div class="risk-signal-card success" id="rmc-identity">
+              <div class="risk-signal-icon"></div>
+              <div>
+                <div class="risk-signal-label">Identity Confidence</div>
+                <div class="risk-signal-val" style="color:var(--success);">HIGH</div>
+                <div class="risk-signal-sub">Strong behavioral match</div>
+</div>
+</div>
+</div>
+
+          <!-- LIVE RISK ACTIONS PANEL -->
+          <div class="profile-card" style="padding:20px;margin-bottom:20px;border-left:4px solid var(--danger);">
+            <div style="font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;">Live Risk Actions
+              <span id="rm-actions-count" style="font-size:11px;background:rgba(99,91,255,.15);color:var(--accent);padding:2px 8px;border-radius:10px;font-weight:600;">0 actions</span>
+</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Auto-triggered based on Segment event combinations. Displayed with timestamp.</div>
+            <div id="rm-actions-list" style="max-height:320px;overflow-y:auto;">
+              <div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">No actions triggered yet. Simulate transactions or change location to trigger risk actions.</div>
+</div>
+</div>
+
+          <!-- SEGMENT EVENT LOG -->
+          <div class="profile-card" style="padding:20px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;">Segment Source Debugger <span style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 1.5s infinite;"></span></div>
+              <button onclick="clearRmLog()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);font-size:11px;cursor:pointer;">Clear</button>
+</div>
+            <div id="rm-event-log" style="font-family:monospace;font-size:12px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:14px;line-height:1.9;max-height:260px;overflow-y:auto;color:var(--muted);">
+              <span style="color:var(--muted);">// Monitor initialized. Waiting for events…</span>
+</div>
+</div>
+
+</div><!-- /view-risk-monitor -->
+
+
+</div><!-- /dash-views -->
+</div>
+</div>
 </div>
 
 <script>
@@ -1260,17 +1555,17 @@ function updateSessionPanel() {
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <span style="width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 1.5s infinite;"></span>
       <span style="font-size:13px;font-weight:600;color:var(--success);">Session Active</span>
-    </div>
+</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div style="background:var(--surface2);border-radius:8px;padding:10px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Started At</div>
         <div style="font-size:13px;font-weight:600;">${sessionState.startTime.toLocaleTimeString('en-IN')}</div>
-      </div>
+</div>
       <div style="background:var(--surface2);border-radius:8px;padding:10px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Duration</div>
         <div style="font-size:13px;font-weight:600;color:var(--accent);" id="session-duration-counter">${formatDuration(elapsed)}</div>
-      </div>
-    </div>
+</div>
+</div>
     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Session Milestones</div>
     <div style="max-height:100px;overflow-y:auto;">${milestonesHtml}</div>`;
   clearInterval(window._sessionCounterInterval);
@@ -1381,7 +1676,7 @@ function doLogin() {
   document.getElementById('li-email').value = '';
   document.getElementById('li-pass').value = '';
   document.getElementById('li-err').className = 'err-msg';
-  if (previousFails > 0) {
+  if (previousFails >0) {
     showRecoveryMetrics(user, previousFails, () => {
       showToast('Welcome back, ' + user.name.split(' ')[0] + '! ', 'success');
       loadDashboard();
@@ -1489,7 +1784,7 @@ function renderDocGrid() {
       <div class="doc-name">${d.label}</div>
       <div class="doc-hint">${d.hint}</div>
       <div class="doc-status ${docs[d.id] ? 'ok' : 'pending'}">${docs[d.id] ? '✓ Uploaded: ' + docs[d.id] : 'Tap to upload'}</div>
-    </div>`).join('');
+</div>`).join('');
 }
 function handleDocUpload(docId, input) {
   const file = input.files[0];
@@ -1656,25 +1951,56 @@ function loadDashboard() {
   renderProfile(user);
   renderObProgress(user);
   renderDocuments(user);
+  renderPaymentCenter(user);
   switchView('overview');
   startSession(user);
   analytics.track('Dashboard Viewed', { merchantId: user.mid, churnRisk: user.churnRisk, trustScore: user.trustScore, activationStatus: user.activationStatus, onboardingProgress: user.onboarding.pct + '%', device: detectDevice() });
   analytics.identify(user.mid, { activationStatus: user.activationStatus, churnRisk: user.churnRisk, trustScore: user.trustScore, onboardingProgress: user.onboarding.pct + '%', lastLogin: user.lastLogin, device: detectDevice() });
 }
 function renderKPIs(user) {
-  const lastLoginAgo = timeAgo(user.lastLogin);
-  const churnColor = { 'LOW': 'var(--success)', 'MEDIUM': 'var(--warning)', 'HIGH': 'var(--danger)', 'CRITICAL': '#5c5c5c' };
-  const kpis = [
-    { label: 'Onboarding Progress', val: user.onboarding.pct + '%',                       color: 'var(--accent)' },
-    { label: 'Last Login',          val: lastLoginAgo,                  sub: new Date(user.lastLogin).toLocaleDateString('en-IN'), color: 'var(--accent2)' },
-    { label: 'Open Tickets',        val: user.openTickets || 0,         sub: 'Support requests',                        color: 'var(--warning)' },
-     ];
-  document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
-    <div class="kpi-card" style="--accent-c:${k.color}">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-val" style="color:${k.color}">${k.val}</div>
-      <div class="kpi-sub">${k.sub}</div>
-    </div>`).join('');
+  const grid = document.getElementById('kpi-grid');
+  if (grid) grid.innerHTML = '';
+}
+function renderPaymentCenter(user) {
+  const txns = (user.transactions || []);
+  const successTxns = txns.filter(t => t.status === 'Success');
+  const pendingTxns = txns.filter(t => t.status === 'Pending');
+  const totalSent   = successTxns.reduce((s, t) => s + (Number(t.amount)||0), 0);
+  const avgAmount   = successTxns.length ? Math.round(totalSent / successTxns.length) : 0;
+  const successRate = txns.length ? Math.round((successTxns.length / txns.length) * 100) : null;
+  const sym = '₹';
+
+  // KPIs
+  const totalEl  = document.getElementById('pc-total-sent');
+  const countEl  = document.getElementById('pc-txn-count');
+  const rateEl   = document.getElementById('pc-success-rate');
+  const pendEl   = document.getElementById('pc-pending-count');
+  const avgEl    = document.getElementById('pc-avg-amount');
+  if (totalEl) totalEl.textContent = sym + totalSent.toLocaleString('en-IN');
+  if (countEl) countEl.textContent = txns.length + (txns.length === 1 ? ' transaction' : ' transactions');
+  if (rateEl)  rateEl.textContent  = successRate !== null ? successRate + '%' : '—';
+  if (pendEl)  pendEl.textContent  = pendingTxns.length;
+  if (avgEl)   avgEl.textContent   = avgAmount > 0 ? sym + avgAmount.toLocaleString('en-IN') : '—';
+
+  // Last transaction
+  const lastTxnEl = document.getElementById('pay-center-last-txn');
+  if (lastTxnEl && txns.length > 0) {
+    const last = txns[txns.length - 1];
+    const statusColors = { Success:'var(--success)', Failed:'var(--danger)', Pending:'var(--warning)', Refunded:'var(--accent2)' };
+    const sc = statusColors[last.status] || 'var(--muted)';
+    const cfg = CORRIDORS[last.corridor] || {};
+    lastTxnEl.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div>
+          <div style="font-weight:600;font-size:13px;">${last.recipient||'—'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">${cfg.label||last.corridor||'—'} &middot; ${last.method||'—'}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700;font-size:14px;">${(cfg.sym||'₹')}${Number(last.amount||0).toLocaleString('en-IN')}</div>
+          <div style="font-size:11px;color:${sc};font-weight:600;margin-top:2px;">${last.status}</div>
+        </div>
+      </div>`;
+  }
 }
 function renderSnapshot(user) {
   const d = user.onboarding.details || {};
@@ -1684,14 +2010,14 @@ function renderSnapshot(user) {
       <div class="profile-info">
         <div class="profile-name">${user.name}</div>
         <div class="profile-id">${user.mid}</div>
-      </div>
-    </div>
+</div>
+</div>
     <div class="profile-grid">
       ${infoItem('Enterprise', d.enterpriseName || '—')}
       ${infoItem('Business Type', d.businessType || '—')}
       ${infoItem('Contact', d.contact || '—')}
       ${infoItem('Email', user.email)}
-    </div>`;
+</div>`;
 }
 function renderProfile(user) {
   const d = user.onboarding.details || {};
@@ -1704,8 +2030,8 @@ function renderProfile(user) {
     ['Email', user.email], ['Contact', d.contact || '—'], ['Country / Location', d.country || '—'],
     ['Enterprise Name', d.enterpriseName || '—'], ['Enterprise Address', d.enterpriseAddress || '—'],
     ['Business Type', d.businessType || '—'], ['Monthly Income', d.monthlyIncome ? '₹ ' + Number(d.monthlyIncome).toLocaleString('en-IN') : '—'],
-    ['Last Login', new Date(user.lastLogin).toLocaleString('en-IN')], ['Account Created', new Date(user.createdAt).toLocaleString('en-IN')],
-    ['Activation Status', user.activationStatus], ['Churn Risk', user.churnRisk], ['Trust Score', user.trustScore + '/10'],
+    ['Account Created', new Date(user.createdAt).toLocaleString('en-IN')],
+    ['Activation Status', user.activationStatus],
   ];
   document.getElementById('profile-grid').innerHTML = fields.map(([k,v]) => `
     <div class="profile-field"><div class="pf-label">${k}</div><div class="pf-val">${v}</div></div>`).join('');
@@ -1719,14 +2045,14 @@ function renderObProgress(user) {
     <div class="progress-bar-bg" style="height:8px;"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;">
       <div style="background:var(--surface2);border-radius:10px;padding:14px;border-left:3px solid var(--accent2);">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;"> Personal Details</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Personal Details</div>
         <div style="font-weight:600;">${user.onboarding.details ? Object.values(user.onboarding.details).filter(v=>v).length : 0}/9 fields</div>
-      </div>
+</div>
       <div style="background:var(--surface2);border-radius:10px;padding:14px;border-left:3px solid var(--accent);">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;"> Documents</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Documents</div>
         <div style="font-weight:600;">${Object.keys(user.onboarding.docs||{}).length}/${DOC_TYPES.length} uploaded</div>
-      </div>
-    </div>`;
+</div>
+</div>`;
 }
 function renderDocuments(user) {
   const docs = user.onboarding.docs || {};
@@ -1737,7 +2063,7 @@ function renderDocuments(user) {
       <div style="font-size:28px;margin-bottom:8px;">${d.icon}</div>
       <div style="font-weight:600;font-size:14px;">${d.label}</div>
       <div style="font-size:12px;margin-top:6px;color:${docs[d.id]?'var(--success)':'var(--muted)'};">${docs[d.id] ? '✓ ' + docs[d.id] : 'Not uploaded'}</div>
-    </div>`).join('')}</div>`;
+</div>`).join('')}</div>`;
 }
 function infoItem(label, val) {
   return `<div class="profile-field"><div class="pf-label">${label}</div><div class="pf-val">${val}</div></div>`;
@@ -1757,18 +2083,17 @@ function switchView(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const view = document.getElementById('view-' + name);
   if (view) view.classList.add('active');
-  const titles = { overview:'Overview', profile:'My Profile', alert:'Alert & Support', documents:'My Documents', send:'Send Payment', transactions:'Transactions', 'risk-monitor':'Risk Monitor', identity:'Identity & Trust' };
+  const titles = { overview:'Overview', profile:'My Profile', alert:'Alert & Support', documents:'My Documents', send:'Send Payment', transactions:'Transactions', 'risk-monitor':'Risk Monitor' };
   document.getElementById('view-title').textContent = titles[name] || name;
   document.querySelectorAll('.nav-item').forEach(n => {
     const txt = n.textContent.toLowerCase();
-    if ((name === 'send' && txt.includes('send')) || (name === 'transactions' && txt.includes('transaction')) || (name === 'risk-monitor' && txt.includes('risk')) || (name === 'identity' && txt.includes('identity')) || (!['send','transactions','risk-monitor','identity'].includes(name) && txt.includes(name.toLowerCase()))) n.classList.add('active');
+    if ((name === 'send' && txt.includes('send')) || (name === 'transactions' && txt.includes('transaction')) || (name === 'risk-monitor' && txt.includes('risk')) || (!['send','transactions','risk-monitor'].includes(name) && txt.includes(name.toLowerCase()))) n.classList.add('active');
   });
   closeSidebar();
   analytics.page('Dashboard ' + (titles[name] || name));
   if (name === 'send')         initSendPayment();
   if (name === 'transactions') renderTransactions();
   if (name === 'risk-monitor') initRiskMonitor();
-  if (name === 'identity')     initIdentityTrust();
 }
 
 // ═══════════════════════════════════════
@@ -1814,19 +2139,17 @@ function showRecoveryMetrics(user, failedAttempts, onComplete) {
   const detailText = document.getElementById('recovery-detail-text');
   const churnBadge = document.getElementById('recovery-churn-badge');
   const trustBadge = document.getElementById('recovery-trust-badge');
-  const statusBadge = document.getElementById('recovery-status-badge');
   overlay.style.display = 'flex';
   const churnBefore = user.churnRisk, trustBefore = user.trustScore;
   const steps = [
-    { pct:20,  label:'20% Recovered',   color:'#777777', statusLabel:'Verifying your identity…', detail:'Identity verified — clearing failed attempt flags…',           churnRisk:churnBefore,           trustScore:Math.min(10,trustBefore+1), churnPctLabel:'90% churn risk remaining' },
-    { pct:50,  label:'50% Recovered',   color:'#a7a7a7', statusLabel:'Restoring your session…', detail:'Session trust rebuilding — churn risk reducing…',             churnRisk:churnBefore==='CRITICAL'?'HIGH':churnBefore==='HIGH'?'MEDIUM':churnBefore, trustScore:Math.min(10,trustBefore+3), churnPctLabel:'50% churn risk remaining' },
-    { pct:80,  label:'80% Recovered',   color:'#7a7a7a', statusLabel:'Almost there…', detail:'Account access re-validated — trust score restoring…',        churnRisk:churnBefore==='CRITICAL'?'MEDIUM':churnBefore==='HIGH'?'LOW':'LOW', trustScore:Math.min(10,trustBefore+5), churnPctLabel:'20% churn risk remaining' },
-    { pct:100, label:'100% Recovered ✓',color:'#ffffff', statusLabel:'Verified ✓', detail:'Welcome back — your account is fully restored!',         churnRisk:'LOW', trustScore:Math.min(10,trustBefore+7), churnPctLabel:'10% churn risk remaining' },
+    { pct:20,  label:'20% Recovered',   color:'#ef4444', detail:'Identity verified — clearing failed attempt flags…',           churnRisk:churnBefore,           trustScore:Math.min(10,trustBefore+1), churnPctLabel:'90% churn risk remaining' },
+    { pct:50,  label:'50% Recovered',   color:'#f59e0b', detail:'Session trust rebuilding — churn risk reducing…',             churnRisk:churnBefore==='CRITICAL'?'HIGH':churnBefore==='HIGH'?'MEDIUM':churnBefore, trustScore:Math.min(10,trustBefore+3), churnPctLabel:'50% churn risk remaining' },
+    { pct:80,  label:'80% Recovered',   color:'#3b82f6', detail:'Account access re-validated — trust score restoring…',        churnRisk:churnBefore==='CRITICAL'?'MEDIUM':churnBefore==='HIGH'?'LOW':'LOW', trustScore:Math.min(10,trustBefore+5), churnPctLabel:'20% churn risk remaining' },
+    { pct:100, label:'100% Recovered ✓',color:'#10b981', detail:'Churn risk reduced to 10% — account fully restored!',         churnRisk:'LOW', trustScore:Math.min(10,trustBefore+7), churnPctLabel:'10% churn risk remaining' },
   ];
   let i = 0;
   bar.style.width = '0%'; pctText.textContent = '0%'; statusText.textContent = 'Initiating recovery…';
-  detailText.textContent = `We noticed ${failedAttempts} unsuccessful sign-in attempt(s). Let's get you back in.`;
-  if (statusBadge) statusBadge.textContent = 'Verifying…';
+  detailText.textContent = `${failedAttempts} failed attempt(s) detected. Churn risk was: ${churnBefore}`;
   if (churnBadge) churnBadge.textContent = churnBefore;
   if (trustBadge) trustBadge.textContent = trustBefore + '/10';
   analytics.track('Account Recovery Initiated', { merchantId: user.mid, failedAttemptsBefore: failedAttempts, churnRiskBefore: churnBefore, trustScoreBefore: trustBefore });
@@ -1845,365 +2168,13 @@ function showRecoveryMetrics(user, failedAttempts, onComplete) {
     bar.style.background = `linear-gradient(90deg, ${step.color}, ${steps[Math.min(i+1,3)].color})`;
     bar.style.width = step.pct + '%'; pctText.textContent = step.pct + '%'; pctText.style.color = step.color;
     statusText.textContent = step.label; statusText.style.color = step.color; detailText.textContent = step.detail;
-    if (statusBadge) { statusBadge.textContent = step.statusLabel; statusBadge.style.color = step.color; }
-    if (churnBadge) { churnBadge.textContent = step.churnRisk; churnBadge.style.color = step.churnRisk === 'LOW' ? '#ffffff' : step.churnRisk === 'MEDIUM' ? '#a7a7a7' : '#777777'; }
+    if (churnBadge) { churnBadge.textContent = step.churnRisk; churnBadge.style.color = step.churnRisk === 'LOW' ? '#10b981' : step.churnRisk === 'MEDIUM' ? '#f59e0b' : '#ef4444'; }
     if (trustBadge) trustBadge.textContent = step.trustScore + '/10';
     const churnPctEl = document.getElementById('recovery-churn-pct');
     if (churnPctEl) { churnPctEl.textContent = step.churnPctLabel; churnPctEl.style.color = step.color; }
     i++; setTimeout(runStep, 950);
   }
   setTimeout(runStep, 400);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// ██████╗ ██╗███████╗██╗  ██╗    ███████╗██████╗  █████╗ ██╗   ██╗██████╗
-// ██╔══██╗██║██╔════╝██║ ██╔╝    ██╔════╝██╔══██╗██╔══██╗██║   ██║██╔══██╗
-// ██████╔╝██║███████╗█████╔╝     █████╗  ██████╔╝███████║██║   ██║██║  ██║
-// ██╔══██╗██║╚════██║██╔═██╗     ██╔══╝  ██╔══██╗██╔══██║██║   ██║██║  ██║
-// ██║  ██║██║███████║██║  ██╗    ██║     ██║  ██║██║  ██║╚██████╔╝██████╔╝
-// RISK & FRAUD COMPLIANCE MODULE
-// ═══════════════════════════════════════════════════════════════
-
-// Risk scenario state
-let _riskScenario = {
-  txnId: null, amount: 0, amountFormatted: '', deviceChanged: false,
-  locationChanged: false, newCountry: '', velocity: '', riskScore: 0,
-  identityConfidence: '', selectedAction: null, actionTimestamp: null,
-  eventChain: [], riskLevel: '',
-};
-
-// Available risk actions
-const RISK_ACTIONS = [
-  {
-    id: 'step_up_auth',
-    icon: '',
-    name: 'Step-Up Authentication',
-    desc: 'Request additional OTP / biometric verification from the merchant before allowing the transaction to proceed.',
-    badge: ' Fastest resolution',
-    badgeColor: 'var(--accent)',
-  },
-  {
-    id: 'manual_review',
-    icon: '',
-    name: 'Manual Review Queued',
-    desc: 'Flag transaction for human analyst review. Transaction is held pending compliance team sign-off.',
-    badge: ' 2–4 hr turnaround',
-    badgeColor: 'var(--warning)',
-  },
-  {
-    id: 'risk_processor',
-    icon: '',
-    name: 'Risk-Aware Processor',
-    desc: 'Route to alternative payment processor with enhanced fraud scoring, velocity checks, and AML screening.',
-    badge: ' Enhanced AML screening',
-    badgeColor: 'var(--accent2)',
-  },
-];
-
-// Random scenario generator
-function generateRiskScenario() {
-  const amounts = [368500, 500000, 125000, 750000, 290000];
-  const countries = ['Nigeria', 'Pakistan', 'North Korea', 'Iran', 'Venezuela'];
-  const velocities = ['10x normal (last 5 min)', '8x normal (last 10 min)', '15x normal (last 2 min)'];
-  const confidences = [
-    { label: 'HIGH',   color: 'var(--success)', score: 0.82 },
-    { label: 'HIGH',   color: 'var(--success)', score: 0.85 },
-    { label: 'MEDIUM', color: 'var(--warning)', score: 0.91 },
-  ];
-  const conf = confidences[Math.floor(Math.random() * confidences.length)];
-  return {
-    txnId: 'TXN_' + Math.random().toString(36).slice(2, 10).toUpperCase(),
-    amount: amounts[Math.floor(Math.random() * amounts.length)],
-    deviceChanged: true,
-    locationChanged: true,
-    newCountry: countries[Math.floor(Math.random() * countries.length)],
-    velocity: velocities[Math.floor(Math.random() * velocities.length)],
-    riskScore: conf.score,
-    identityConfidence: conf.label,
-    identityColor: conf.color,
-    riskLevel: conf.score >= 0.85 ? 'CRITICAL' : conf.score >= 0.75 ? 'ELEVATED' : 'MODERATE',
-    riskLevelColor: conf.score >= 0.85 ? 'var(--danger)' : conf.score >= 0.75 ? 'var(--warning)' : 'var(--accent2)',
-    selectedAction: null,
-    actionTimestamp: null,
-    eventChain: [],
-  };
-}
-
-function setChainStep(step, state) {
-  // state: 'done' | 'active' | 'danger' | '' (reset)
-  const el = document.getElementById('rchain-' + step);
-  if (!el) return;
-  el.className = 'risk-event-step' + (state ? ' ' + state : '');
-}
-
-function initRiskView() {
-  const email = getCurrentUser();
-  const user  = getUserData(email);
-  _riskScenario = generateRiskScenario();
-  _riskScenario.amountFormatted = '₹' + _riskScenario.amount.toLocaleString('en-IN');
-
-  // Reset screens
-  document.getElementById('risk-screen-1').style.display = 'block';
-  document.getElementById('risk-screen-2').style.display = 'none';
-  document.getElementById('risk-screen-3').style.display = 'none';
-
-  // Reset event chain
-  for (let i = 1; i <= 5; i++) setChainStep(i, '');
-
-  // Update display
-  document.getElementById('risk-amount-display').textContent = _riskScenario.amountFormatted;
-  document.getElementById('risk-txn-id').textContent = _riskScenario.txnId;
-  document.getElementById('risk-score-val').textContent = _riskScenario.riskScore.toFixed(2);
-  document.getElementById('risk-level-label').textContent = _riskScenario.riskLevel;
-  document.getElementById('risk-level-label').style.color = _riskScenario.riskLevelColor;
-
-  const ring = document.getElementById('risk-score-ring');
-  if (ring) ring.style.borderColor = _riskScenario.riskLevelColor;
-
-  // Build signal cards
-  const signals = [
-    { label: 'Transaction Amount',    val: _riskScenario.amountFormatted, sub: 'Single transaction — above threshold', icon: '', type: 'danger' },
-    { label: 'Device Changed',        val: ' YES — New Device',          sub: 'iPhone 14 → Unknown Android (India)',  icon: '', type: 'danger' },
-    { label: 'Location Changed',      val: ' YES — New Country',         sub: _riskScenario.newCountry + ' (FATF High-Risk)', icon: '', type: 'danger' },
-    { label: 'Transaction Velocity',  val: _riskScenario.velocity,         sub: 'Unusual burst pattern detected',       icon: '', type: 'danger' },
-    { label: 'Identity Confidence',   val: _riskScenario.identityConfidence, sub: 'KYC match: verified merchant', icon: '', type: _riskScenario.identityConfidence === 'HIGH' ? 'success' : 'warning' },
-    { label: 'AML Screening',         val: ' Flagged',                    sub: 'Matches OFAC watchlist pattern',       icon: '', type: 'warning' },
-  ];
-  document.getElementById('risk-signals-grid').innerHTML = signals.map(s => `
-    <div class="risk-signal-card ${s.type}">
-      <div class="risk-signal-icon">${s.icon}</div>
-      <div>
-        <div class="risk-signal-label">${s.label}</div>
-        <div class="risk-signal-val" style="color:${s.type==='danger'?'var(--danger)':s.type==='success'?'var(--success)':'var(--warning)'}">${s.val}</div>
-        <div class="risk-signal-sub">${s.sub}</div>
-      </div>
-    </div>`).join('');
-
-  // Fire Segment events: Transaction Attempted → Risk Signals Captured
-  const now = new Date().toISOString();
-  document.getElementById('risk-event-ts').textContent = new Date().toLocaleTimeString('en-IN');
-
-  if (user) {
-    // 1. Transaction Attempted
-    analytics.track('Transaction Attempted', {
-      merchantId: user.mid,
-      transactionId: _riskScenario.txnId,
-      amount: _riskScenario.amount,
-      amountFormatted: _riskScenario.amountFormatted,
-      corridor: 'INR-USD',
-      timestamp: now,
-    });
-    _riskScenario.eventChain.push({ event: 'Transaction Attempted', ts: now });
-
-    // 2. Risk Signals Captured
-    analytics.track('Risk Signals Captured', {
-      merchantId: user.mid,
-      transactionId: _riskScenario.txnId,
-      amount: _riskScenario.amount,
-      device_changed: _riskScenario.deviceChanged,
-      location_changed: _riskScenario.locationChanged,
-      new_country: _riskScenario.newCountry,
-      velocity: _riskScenario.velocity,
-      risk_score: _riskScenario.riskScore,
-      identity_confidence: _riskScenario.identityConfidence,
-      aml_flagged: true,
-      risk_level: _riskScenario.riskLevel,
-      timestamp: now,
-    });
-    _riskScenario.eventChain.push({ event: 'Risk Signals Captured', ts: now });
-
-    // 3. Risk Evaluated
-    analytics.track('Risk Evaluated', {
-      merchantId: user.mid,
-      transactionId: _riskScenario.txnId,
-      risk_score: _riskScenario.riskScore,
-      risk_level: _riskScenario.riskLevel,
-      signals_count: 5,
-      auto_hold: true,
-      timestamp: now,
-    });
-    _riskScenario.eventChain.push({ event: 'Risk Evaluated', ts: now });
-  }
-
-  // Update chain UI
-  setChainStep(1, 'done');
-  setChainStep(2, 'done');
-  setChainStep(3, 'active');
-
-  // Build event log display
-  document.getElementById('risk-segment-log').innerHTML = [
-    `<span style="color:var(--muted);">event_1:</span> <span style="color:var(--accent2);">Transaction Attempted</span>`,
-    `  merchantId: ${user?.mid || '—'}`,
-    `  transactionId: ${_riskScenario.txnId}`,
-    `  amount: ${_riskScenario.amount}`,
-    ``,
-    `<span style="color:var(--muted);">event_2:</span> <span style="color:var(--warning);">Risk Signals Captured</span>`,
-    `  device_changed: ${_riskScenario.deviceChanged}  ← `,
-    `  location_changed: ${_riskScenario.locationChanged}  ← `,
-    `  new_country: "${_riskScenario.newCountry}"  ← `,
-    `  velocity: "${_riskScenario.velocity}"  ← `,
-    `  risk_score: ${_riskScenario.riskScore}`,
-    `  identity_confidence: "${_riskScenario.identityConfidence}"  ← `,
-    ``,
-    `<span style="color:var(--muted);">event_3:</span> <span style="color:var(--accent);">Risk Evaluated</span>`,
-    `  risk_level: "${_riskScenario.riskLevel}"`,
-    `  auto_hold: true`,
-  ].join('\n');
-}
-
-function goRiskScreen1() {
-  document.getElementById('risk-screen-1').style.display = 'block';
-  document.getElementById('risk-screen-2').style.display = 'none';
-  document.getElementById('risk-screen-3').style.display = 'none';
-  setChainStep(4, '');
-  setChainStep(5, '');
-}
-
-function goRiskScreen2() {
-  document.getElementById('risk-screen-1').style.display = 'none';
-  document.getElementById('risk-screen-2').style.display = 'block';
-  document.getElementById('risk-screen-3').style.display = 'none';
-
-  setChainStep(3, 'done');
-  setChainStep(4, 'active');
-
-  // Render action cards
-  document.getElementById('risk-actions-grid').innerHTML = RISK_ACTIONS.map(a => `
-    <div class="action-card ${_riskScenario.selectedAction === a.id ? 'selected' : ''}" id="action-card-${a.id}" onclick="selectRiskAction('${a.id}')">
-      <div class="action-icon">${a.icon}</div>
-      <div class="action-name">${a.name}</div>
-      <div class="action-desc">${a.desc}</div>
-      <div style="margin-top:12px;font-size:11px;font-weight:600;color:${a.badgeColor};">${a.badge}</div>
-    </div>`).join('');
-
-  // If already selected, show result
-  if (_riskScenario.selectedAction) {
-    showActionResult(_riskScenario.selectedAction);
-  }
-}
-
-function selectRiskAction(actionId) {
-  _riskScenario.selectedAction = actionId;
-  _riskScenario.actionTimestamp = new Date().toISOString();
-
-  // Update card highlights
-  RISK_ACTIONS.forEach(a => {
-    const card = document.getElementById('action-card-' + a.id);
-    if (card) card.classList.toggle('selected', a.id === actionId);
-  });
-
-  showActionResult(actionId);
-
-  // Enable next button
-  const btn = document.getElementById('risk-action-next-btn');
-  if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
-
-  // Fire Segment: Risk Action Taken
-  const email = getCurrentUser();
-  const user  = getUserData(email);
-  if (user) {
-    analytics.track('Risk Action Taken', {
-      merchantId: user.mid,
-      transactionId: _riskScenario.txnId,
-      action_type: actionId,
-      action_label: RISK_ACTIONS.find(a => a.id === actionId)?.name,
-      risk_score: _riskScenario.riskScore,
-      timestamp: _riskScenario.actionTimestamp,
-    });
-    _riskScenario.eventChain.push({ event: 'Risk Action Taken', action: actionId, ts: _riskScenario.actionTimestamp });
-  }
-
-  setChainStep(4, 'done');
-}
-
-function showActionResult(actionId) {
-  const action = RISK_ACTIONS.find(a => a.id === actionId);
-  if (!action) return;
-
-  document.getElementById('risk-action-result').style.display = 'block';
-  document.getElementById('action-result-icon').textContent = action.icon;
-  document.getElementById('action-result-name').textContent = action.name + ' — Triggered';
-  document.getElementById('action-result-ts').textContent = 'Timestamp: ' + new Date(_riskScenario.actionTimestamp || Date.now()).toLocaleString('en-IN');
-
-  const descriptions = {
-    step_up_auth:   'OTP sent to registered mobile +91-XXXXX-XXXXX. Merchant has 5 minutes to verify. Transaction is paused pending authentication.',
-    manual_review:  'Case #' + Math.random().toString(36).slice(2,8).toUpperCase() + ' created. Assigned to Compliance Team — Tier 2. SLA: 2 hours. Slack notification sent to #risk-alerts.',
-    risk_processor: 'Transaction re-routed to RiskShield Pro (Processor ID: RSP_' + Math.random().toString(36).slice(2,6).toUpperCase() + '). Enhanced velocity checks and OFAC re-screening in progress.',
-  };
-  document.getElementById('action-result-desc').textContent = descriptions[actionId] || '';
-
-  const badges = { step_up_auth: 'Awaiting OTP', manual_review: 'Under Review', risk_processor: 'Re-routing' };
-  document.getElementById('action-result-badge').textContent = badges[actionId] || 'In Progress';
-
-  document.getElementById('risk-action-log').innerHTML = [
-    `event: "Risk Action Taken"`,
-    `  action_type: "${actionId}"`,
-    `  action_label: "${action.name}"`,
-    `  transactionId: "${_riskScenario.txnId}"`,
-    `  risk_score: ${_riskScenario.riskScore}`,
-    `  timestamp: "${_riskScenario.actionTimestamp}"`,
-  ].join('\n');
-}
-
-function goRiskScreen3() {
-  if (!_riskScenario.selectedAction) { showToast('Please select an action first.', 'danger'); return; }
-
-  document.getElementById('risk-screen-1').style.display = 'none';
-  document.getElementById('risk-screen-2').style.display = 'none';
-  document.getElementById('risk-screen-3').style.display = 'block';
-
-  setChainStep(4, 'done');
-  setChainStep(5, 'done');
-
-  const action = RISK_ACTIONS.find(a => a.id === _riskScenario.selectedAction);
-  const now    = new Date().toISOString();
-  const fraudPrevented = true;
-  const status = 'blocked';
-
-  document.getElementById('outcome-amount').textContent = _riskScenario.amountFormatted;
-  document.getElementById('outcome-action-icon').textContent = action?.icon || '✓';
-  document.getElementById('outcome-action-label').textContent = (action?.name || 'Action') + ' — completed successfully';
-
-  // Fire Segment: Transaction Completed
-  const email = getCurrentUser();
-  const user  = getUserData(email);
-  if (user) {
-    analytics.track('Transaction Completed', {
-      merchantId: user.mid,
-      transactionId: _riskScenario.txnId,
-      status: status,
-      fraud_prevented: fraudPrevented,
-      amount: _riskScenario.amount,
-      risk_score: _riskScenario.riskScore,
-      action_taken: _riskScenario.selectedAction,
-      timestamp: now,
-    });
-    _riskScenario.eventChain.push({ event: 'Transaction Completed', status, ts: now });
-  }
-
-  // Outcome Segment log
-  document.getElementById('risk-outcome-log').innerHTML = [
-    `event: "Transaction Completed"`,
-    `  merchantId: "${user?.mid || '—'}"`,
-    `  transactionId: "${_riskScenario.txnId}"`,
-    `  status: "${status}"  ←  blocked`,
-    `  fraud_prevented: ${fraudPrevented}  ←  true`,
-    `  amount: ${_riskScenario.amount}`,
-    `  risk_score: ${_riskScenario.riskScore}`,
-    `  action_taken: "${_riskScenario.selectedAction}"`,
-    `  timestamp: "${now}"`,
-  ].join('\n');
-
-  // Full chain replay
-  document.getElementById('risk-full-chain-log').innerHTML = _riskScenario.eventChain.map((e, idx) =>
-    `<span style="color:var(--accent);">${idx+1}. ${e.event}</span>${e.action ? ` (${e.action})` : ''} — <span style="color:var(--muted);">${new Date(e.ts).toLocaleTimeString('en-IN')}</span>`
-  ).join('\n');
-}
-
-function resetRisk() {
-  _riskScenario = {};
-  for (let i = 1; i <= 5; i++) setChainStep(i, '');
-  initRiskView();
 }
 
 // ═══════════════════════════════════════
@@ -2304,7 +2275,7 @@ function generateDeviceId() {
   // simple deterministic hash (djb2) — no external deps needed
   let hash = 5381;
   for (let i = 0; i < raw.length; i++) {
-    hash = ((hash << 5) + hash + raw.charCodeAt(i)) >>> 0;
+    hash = ((hash << 5) + hash + raw.charCodeAt(i)) >>>0;
   }
   return 'dev_' + hash.toString(36);
 }
@@ -2441,12 +2412,12 @@ function renderMethodCards() {
     const isFirst=idx===0&&m===preferred; const isRec=m===cfg.rec; const isSel=m===_sp.method;
     return `<div class="pay-method-card ${isSel?'selected':''} ${isFirst?'featured-first':isRec&&!isSel?'recommended':''}" onclick="selectMethod('${m}')">
       <div class="pm-info"><div class="pm-name">${m}</div><div class="pm-sub">${meta.sub}</div>
-      <div>${isFirst?`<span class="pm-badge-first"> First for you</span>`:''} ${isSel?`<span class="pm-badge-preferred">✓ Selected</span>`:''} ${isRec&&!isFirst&&!isSel?`<span class="pm-badge-rec"> Recommended</span>`:''} ${meta.time!=='Instant'?`<span class="pm-badge-slow"> ${meta.time}</span>`:''}</div></div></div>`;
+      <div>${isFirst?`<span class="pm-badge-first">First for you</span>`:''} ${isSel?`<span class="pm-badge-preferred">✓ Selected</span>`:''} ${isRec&&!isFirst&&!isSel?`<span class="pm-badge-rec">Recommended</span>`:''} ${meta.time!=='Instant'?`<span class="pm-badge-slow"> ${meta.time}</span>`:''}</div></div></div>`;
   }).join('');
   if(isMobile&&methods.length>2) grid.insertAdjacentHTML('beforeend',`<div style="grid-column:1/-1;font-size:12px;color:var(--muted);text-align:center;padding:6px 0;"> ${methods.length-2} more methods on desktop</div>`);
 }
 function selectMethod(m) {
-  _sp.method=m; _sp.stepReachedPayment=true; renderMethodCards();
+  _sp.method=m; _sp.stepReachedPayment=true; renderMethodCards(); _updateOrderSummary();
   const email=getCurrentUser(); const user=getUserData(email); const cfg=CORRIDORS[_sp.corridor]; const meta=METHOD_META[m]||{};
   if(!user) return;
   const tsSel = new Date().toISOString();
@@ -2464,12 +2435,36 @@ function onCorridorChange() {
   const val=document.getElementById('sp-corridor').value; _sp.corridor=val;
   const cfg=CORRIDORS[val]; const symEl=document.getElementById('sp-currency-label'); if(symEl&&cfg) symEl.textContent=cfg.sym;
   if(_sp.persona) { _sp.persona.geo=cfg.geo; if(cfg.geo==='Brazil'){_sp.persona.preferredMethod='PIX';}else if(cfg.geo==='India'){_sp.persona.preferredMethod='UPI';}else if(cfg.geo==='US'){_sp.persona.preferredMethod='Card';}else{_sp.persona.preferredMethod=cfg.rec;} }
-  _sp.method=null; renderPersonaBanner(); renderMethodCards(); showRecommendation();
+  _sp.method=null; renderPersonaBanner(); renderMethodCards(); showRecommendation(); _updateOrderSummary();
   const email=getCurrentUser(); const user=getUserData(email);
   if(user) { user._lastCorridor=val; saveUserData(email,user); try { analytics.track('Corridor Selected',{merchantId:user.mid,checkoutId:_sp.checkoutId,corridor:val,corridorLabel:cfg?.label,geo:cfg?.geo,timestamp:new Date().toISOString()}); }catch(e){} }
 }
-function onAmountInput()    { _sp.amount    = document.getElementById('sp-amount')?.value||''; }
-function onRecipientInput() { _sp.recipient = document.getElementById('sp-recipient')?.value||''; }
+function onAmountInput()    { _sp.amount    = document.getElementById('sp-amount')?.value||''; _updateOrderSummary(); }
+function onRecipientInput() { _sp.recipient = document.getElementById('sp-recipient')?.value||''; _updateOrderSummary(); }
+function _updateOrderSummary() {
+  const corridor = _sp.corridor || 'INR-USD';
+  const cfg = CORRIDORS[corridor] || {};
+  const sym = cfg.sym || '₹';
+  const amount = Number(_sp.amount) || 0;
+  const method = _sp.method;
+  const meta = method ? (METHOD_META[method] || {fee:0,time:'—'}) : null;
+  const fee = meta ? Math.round(amount * (meta.fee || 0)) : null;
+  const total = fee !== null ? amount + fee : amount;
+
+  const recipientEl = document.getElementById('sp-summary-recipient');
+  const corridorEl  = document.getElementById('sp-summary-corridor');
+  const amountEl    = document.getElementById('sp-summary-amount');
+  const feeEl       = document.getElementById('sp-summary-fee');
+  const methodEl    = document.getElementById('sp-summary-method');
+  const totalEl     = document.getElementById('sp-summary-total');
+
+  if (recipientEl) recipientEl.textContent = _sp.recipient || 'Recipient';
+  if (corridorEl)  corridorEl.textContent  = cfg.label || corridor;
+  if (amountEl)    amountEl.textContent    = amount > 0 ? sym + amount.toLocaleString('en-IN') : '—';
+  if (feeEl)       feeEl.textContent       = meta ? (fee > 0 ? sym + fee.toLocaleString('en-IN') : 'Free') : '—';
+  if (methodEl)    methodEl.textContent    = method || '—';
+  if (totalEl)     totalEl.textContent     = amount > 0 ? sym + total.toLocaleString('en-IN') : '—';
+}
 function spGoReview() {
   const amount=document.getElementById('sp-amount').value.trim();
   const recipient=document.getElementById('sp-recipient').value.trim();
@@ -2607,7 +2602,7 @@ function spConfirm() {
     <div class="review-row"><span class="rr-key">Status</span><span class="rr-val" style="color:var(--success);">✓ Success</span></div>
     <div class="review-row"><span class="rr-key">Estimated Arrival</span><span class="rr-val">${meta.time}</span></div>`;
   if(user) { try{analytics.track('Checkout Completed',{merchantId:user.mid,checkoutId:_sp.checkoutId,transactionId:txnId,corridor:_sp.corridor,corridorLabel:cfg?.label,amount,fee,method:_sp.method,status:'success',recipient:_sp.recipient,geo:countryVal,country:countryVal,device:_sp.device,timestamp:now.toISOString()});}catch(e){} try{analytics.track('Transaction Completed',{merchantId:user.mid,transactionId:txnId,status:'Success',amount,fee,method:_sp.method,corridor:_sp.corridor,geo:countryVal,country:countryVal,device:_sp.device,timestamp:now.toISOString()});}catch(e){} }
-  showToast('Payment sent successfully! ','success'); renderTransactions();
+  showToast('Payment sent successfully!','success'); renderTransactions(); if(user) renderPaymentCenter(user);
 }
 function spReset() { document.getElementById('sp-step-new').style.display='block'; document.getElementById('sp-step-review').style.display='none'; document.getElementById('sp-step-success').style.display='none'; initSendPayment(); }
 
@@ -2642,11 +2637,11 @@ function _rmLogEvent(eventName, props, color) {
   const ts = new Date().toLocaleTimeString('en-IN');
   const lines = [
     `<span style="color:${color};font-weight:700;">${eventName}</span> <span style="color:var(--muted);font-size:10px;">[${ts}]</span>`,
-    ...Object.entries(props).map(([k,v]) => `  <span style="color:#bdbdbd;">${k}:</span> <span style="color:#f4f4f4;">${JSON.stringify(v)}</span>`),
+    ...Object.entries(props).map(([k,v]) => `  <span style="color:#6ee7b7;">${k}:</span> <span style="color:#f3f3f9;">${JSON.stringify(v)}</span>`),
     '',
   ];
   _rmState.segmentLogLines.unshift(...lines.slice().reverse());
-  if (_rmState.segmentLogLines.length > 80) _rmState.segmentLogLines = _rmState.segmentLogLines.slice(0, 80);
+  if (_rmState.segmentLogLines.length >80) _rmState.segmentLogLines = _rmState.segmentLogLines.slice(0, 80);
   const log = document.getElementById('rm-event-log');
   if (log) log.innerHTML = _rmState.segmentLogLines.join('\n');
 }
@@ -2671,9 +2666,9 @@ function _rmAddAction(icon, label, description, color, tsHuman) {
         <div style="flex:1;">
           <div class="rab-label" style="color:${a.color};">${a.label}</div>
           <div class="rab-desc">${a.description}</div>
-          <div class="rab-ts">⏱ ${a.ts}</div>
-        </div>
-      </div>`;
+          <div class="rab-ts"> ${a.ts}</div>
+</div>
+</div>`;
     }).join('');
   }
 }
@@ -2697,7 +2692,7 @@ function _rmUpdateScoreCard(score, identity) {
   if (_rmState.velocityHigh)    sigs++;
   if (_rmState.deviceChanged)   sigs++;
   const sv = document.getElementById('rm-signals-val');
-  if (sv) { sv.textContent = sigs; sv.style.color = sigs > 0 ? 'var(--danger)' : 'var(--success)'; }
+  if (sv) { sv.textContent = sigs; sv.style.color = sigs >0 ? 'var(--danger)' : 'var(--success)'; }
 }
 
 function _rmUpdateSignalCard(cardId, type, valText, subText) {
@@ -2795,7 +2790,7 @@ function _recalcRiskScore() {
 // ── Velocity Tracker ─────────────────────────────────────────────
 /**
  * High-velocity check, per spec: "multiple transactions within 1 minute".
- * We define the threshold as > 1 transaction inside a rolling 60s window
+ * We define the threshold as >1 transaction inside a rolling 60s window
  * (i.e. 2 or more transactions within 60 seconds triggers high velocity).
  * Adjust VELOCITY_WINDOW_MS / VELOCITY_THRESHOLD below to tune sensitivity.
  */
@@ -2812,10 +2807,10 @@ function _checkVelocity() {
 
   const velEl  = document.getElementById('rm-velocity-val');
   const velSub = document.getElementById('rm-velocity-sub');
-  if (velEl) { velEl.textContent = count; velEl.style.color = recentWithinWindow > VELOCITY_THRESHOLD ? 'var(--danger)' : count > 7 ? 'var(--warning)' : 'var(--success)'; }
-  if (velSub) velSub.textContent = recentWithinWindow > VELOCITY_THRESHOLD ? ' HIGH VELOCITY — multiple txns within 1 min' : 'Safe — threshold: >1 txn/min';
+  if (velEl) { velEl.textContent = count; velEl.style.color = recentWithinWindow >VELOCITY_THRESHOLD ? 'var(--danger)' : count >7 ? 'var(--warning)' : 'var(--success)'; }
+  if (velSub) velSub.textContent = recentWithinWindow >VELOCITY_THRESHOLD ? ' HIGH VELOCITY — multiple txns within 1 min' : 'Safe — threshold: >1 txn/min';
 
-  if (recentWithinWindow > VELOCITY_THRESHOLD && !_rmState.velocityHigh) {
+  if (recentWithinWindow >VELOCITY_THRESHOLD && !_rmState.velocityHigh) {
     _rmState.velocityHigh = true;
     _rmUpdateSignalCard('rmc-velocity', 'danger', ' HIGH VELOCITY', recentWithinWindow + ' transactions in last 1 min');
 
@@ -2843,8 +2838,8 @@ function _checkVelocity() {
     _rmUpdateSignalCard('rmc-velocity', 'success', 'Normal', count + ' transactions in last 5 min');
     _recalcRiskScore();
   } else {
-    const type = count > 7 ? 'warning' : 'success';
-    _rmUpdateSignalCard('rmc-velocity', type, count > 7 ? ' Elevated' : 'Normal', count + ' transactions in last 5 min');
+    const type = count >7 ? 'warning' : 'success';
+    _rmUpdateSignalCard('rmc-velocity', type, count >7 ? ' Elevated' : 'Normal', count + ' transactions in last 5 min');
   }
 }
 
@@ -2856,12 +2851,11 @@ function showRiskPopup(type, icon, title, desc, props) {
   box.className = 'risk-popup-box popup-' + type;
   document.getElementById('rp-icon').textContent  = icon;
   document.getElementById('rp-title').textContent = title;
-  document.getElementById('rp-ts').textContent    = new Date().toLocaleString('en-IN');
+  document.getElementById('rp-ts').textContent    = ' ' + new Date().toLocaleString('en-IN');
   document.getElementById('rp-desc').textContent  = desc;
-  // Internal risk data (risk_score, identity_confidence, etc.) is sent to
-  // Segment for the business — it is intentionally never rendered here.
-  const propsEl = document.getElementById('rp-props');
-  if (propsEl) propsEl.style.display = 'none';
+  document.getElementById('rp-props').innerHTML   = Object.entries(props).map(([k,v]) =>
+    `<span style="color:#6ee7b7;">${k}:</span> <span style="color:#f3f3f9;">${JSON.stringify(v)}</span>`
+  ).join('\n');
   overlay.classList.add('show');
 }
 function closeRiskPopup() {
@@ -2926,12 +2920,12 @@ function _triggerRiskActions(trigger) {
   // Device change → Manual Review
   // Medium risk (0.35–0.64) → Route to Risk-Aware Processor
 
-  const isStepUp   = (_rmState.velocityHigh && _rmState.locationChanged) || score > 0.8;
+  const isStepUp   = (_rmState.velocityHigh && _rmState.locationChanged) || score >0.8;
   const isReview   = _rmState.deviceChanged && !isStepUp;
   const isReroute  = !isStepUp && !isReview && score >= 0.3;
 
   if (isStepUp) {
-    const reason = score > 0.8 ? 'high_risk_score' : 'velocity_and_location';
+    const reason = score >0.8 ? 'high_risk_score' : 'velocity_and_location';
     _rmAddAction('', 'Step-up Authentication Required',
       `Risk score: ${score.toFixed(2)} — OTP sent to registered mobile. Trigger: ${trigger}. Reason: ${reason}.`,
       'var(--danger)', tsHuman);
@@ -2946,9 +2940,8 @@ function _triggerRiskActions(trigger) {
       try { analytics.track('step_up_auth_triggered', p); } catch(e){}
       _rmLogEvent('step_up_auth_triggered', p, 'var(--danger)');
     }
-    showRiskPopup('danger', '', 'Verifying This Transaction',
-      `For your security, we need to confirm it's really you. An OTP has been sent to your registered mobile number — please verify to continue.`,
-      { risk_score: parseFloat(score.toFixed(2)), identity_confidence: _rmState.identityConfidence, reason: trigger, timestamp: ts });
+    // Step-up authentication is handled exclusively via the code-based OTP modal.
+    _showOtpModal(score, _rmState.identityConfidence);
 
   } else if (isReview) {
     const caseId = 'CASE_' + Math.random().toString(36).slice(2,8).toUpperCase();
@@ -2967,8 +2960,8 @@ function _triggerRiskActions(trigger) {
       try { analytics.track('manual_review_queued', p); } catch(e){}
       _rmLogEvent('manual_review_queued', p, 'var(--warning)');
     }
-    showRiskPopup('warning', '', 'Reviewing Your Transaction',
-      `This transaction needs a quick manual check before it can go through. Our team typically completes this within 2 hours — we'll notify you as soon as it's done.`,
+    showRiskPopup('warning', '', 'Manual Review Queued',
+      `Device fingerprint mismatch detected. Case has been queued for Compliance Team review. SLA: 2 hours. Reason: ${trigger}.`,
       { risk_score: parseFloat(score.toFixed(2)), identity_confidence: _rmState.identityConfidence, reason: 'device_change', timestamp: ts });
 
   } else if (isReroute) {
@@ -2988,8 +2981,8 @@ function _triggerRiskActions(trigger) {
       try { analytics.track('transaction_routed_risk_aware', p); } catch(e){}
       _rmLogEvent('transaction_routed_risk_aware', p, 'var(--accent2)');
     }
-    showRiskPopup('info', '', 'Processing Your Payment',
-      `We're running a few extra checks on this payment to keep your account safe. This won't take long.`,
+    showRiskPopup('info', '', 'Transaction Routed to Risk-Aware Processor',
+      `Medium-level risk signals detected (score: ${score.toFixed(2)}). Transaction has been forwarded to enhanced screening processor ${processorId}. Reason: ${trigger}.`,
       { risk_score: parseFloat(score.toFixed(2)), identity_confidence: _rmState.identityConfidence, reason: trigger, timestamp: ts });
   }
 }
@@ -3010,10 +3003,10 @@ function updateLocation() {
   const locStatus = document.getElementById('rm-location-status');
   if (locBadge) {
     locBadge.textContent = isHighRisk ? 'HIGH RISK' : 'CHANGED';
-    locBadge.style.background = isHighRisk ? 'rgba(119,119,119,.15)' : 'rgba(167,167,167,.15)';
+    locBadge.style.background = isHighRisk ? 'rgba(239,68,68,.15)' : 'rgba(182,92,0,.15)';
     locBadge.style.color = isHighRisk ? 'var(--danger)' : 'var(--warning)';
   }
-  if (locStatus) locStatus.innerHTML = `<span style="color:${isHighRisk?'var(--danger)':'var(--warning)'};"> Changed from ${prevLoc} → ${newLoc}${isHighRisk?' (FATF High-Risk / Sanctioned)':' — Monitoring active'}</span>`;
+  if (locStatus) locStatus.innerHTML = `<span style="color:${isHighRisk?'var(--danger)':'var(--warning)'};">Changed from ${prevLoc} → ${newLoc}${isHighRisk?' (FATF High-Risk / Sanctioned)':' — Monitoring active'}</span>`;
 
   _rmUpdateSignalCard('rmc-location', isHighRisk ? 'danger' : 'warning',
     isHighRisk ? ' HIGH RISK COUNTRY' : ' Location Changed',
@@ -3149,7 +3142,7 @@ function initRiskMonitor() {
 
   // Reset UI
   const locBadge = document.getElementById('loc-badge');
-  if (locBadge) { locBadge.textContent = 'TRUSTED'; locBadge.style.background = 'rgba(128,128,128,.15)'; locBadge.style.color = 'var(--success)'; }
+  if (locBadge) { locBadge.textContent = 'TRUSTED'; locBadge.style.background = 'rgba(16,185,129,.15)'; locBadge.style.color = 'var(--success)'; }
   const locStatus = document.getElementById('rm-location-status');
   if (locStatus) locStatus.textContent = 'Current: India — No risk signals from location.';
   const locSel = document.getElementById('rm-location-select');
@@ -3251,7 +3244,7 @@ function _funnelGetStore() {
   }
 }
 function _funnelSaveStore(store) {
-  try { if (store.events.length > FUNNEL_MAX_EVENTS) store.events = store.events.slice(-FUNNEL_MAX_EVENTS); localStorage.setItem(FUNNEL_STORE_KEY, JSON.stringify(store)); }
+  try { if (store.events.length >FUNNEL_MAX_EVENTS) store.events = store.events.slice(-FUNNEL_MAX_EVENTS); localStorage.setItem(FUNNEL_STORE_KEY, JSON.stringify(store)); }
   catch(e) {}
 }
 function _funnelStart(checkoutId, merchantId, corridor, geo, device) {
@@ -3435,7 +3428,7 @@ function _computeAndFireFunnelAnalytics(currentEvent) {
 // TRANSACTIONS
 // ═══════════════════════════════════════
 function seedTransactions(user) {
-  if (user.transactions && user.transactions.length > 0) return;
+  if (user.transactions && user.transactions.length >0) return;
   user.transactions = [
     { id:'pay_kx8fHrJwL9', recipient:'Shopkart Order #4821',   method:'UPI',       corridor:'INR → USD', amount:4200,  fee:0,   status:'Success',  date: new Date(Date.now()-3600000).toISOString() },
     { id:'pay_Mn3kPq7vR1', recipient:'Vendor Payout — LogiCo', method:'NEFT/IMPS', corridor:'INR → EUR', amount:18500, fee:92,  status:'Success',  date: new Date(Date.now()-7200000).toISOString() },
@@ -3469,11 +3462,11 @@ function renderTransactions() {
     {label:'Net Settlement',val:'₹'+settle.toLocaleString('en-IN'),sub:'Tomorrow, 9:00 AM',color:'var(--accent2)'},
   ].map(k=>`<div class="kpi-card" style="--accent-c:${k.color}"><div class="kpi-label">${k.label}</div><div class="kpi-val" style="color:${k.color}">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
   const statusColor={Success:'var(--success)',Pending:'var(--warning)',Failed:'var(--danger)',Refunded:'var(--accent2)'};
-  const statusBg={Success:'rgba(128,128,128,.12)',Pending:'rgba(167,167,167,.12)',Failed:'rgba(119,119,119,.12)',Refunded:'rgba(122,122,122,.12)'};
-  const statusIcon={Success:'✓',Pending:'⏳',Failed:'✕',Refunded:'↩'};
+  const statusBg={Success:'rgba(16,185,129,.12)',Pending:'rgba(182,92,0,.12)',Failed:'rgba(239,68,68,.12)',Refunded:'rgba(5,112,222,.12)'};
+  const statusIcon={Success:'✓',Pending:'',Failed:'',Refunded:'↩'};
   document.getElementById('txn-tbody').innerHTML=txns.length?txns.map(t=>`
     <tr>
-      <td style="padding:12px 16px;"><div style="font-weight:600;font-size:13px;">${t.recipient}</div><div class="txn-id">${t.id}</div>${t.isPending?`<div style="font-size:11px;color:var(--warning);margin-top:2px;">⏳ Left during payment</div>`:''}</td>
+      <td style="padding:12px 16px;"><div style="font-weight:600;font-size:13px;">${t.recipient}</div><div class="txn-id">${t.id}</div>${t.isPending?`<div style="font-size:11px;color:var(--warning);margin-top:2px;">Left during payment</div>`:''}</td>
       <td style="padding:12px 16px;color:var(--muted);font-size:13px;">${(t.recipient||'').split(' ')[0]}</td>
       <td style="padding:12px 16px;"><span style="font-size:13px;font-weight:500;">${t.method||'—'}</span></td>
       <td style="padding:12px 16px;font-size:12px;color:var(--muted);">${t.corridor||'—'}</td>
@@ -3618,7 +3611,7 @@ function _recordTransaction(user) {
   var count = _velocityTimestamps.length;
 
   // Multiple transactions within 1 minute → high velocity
-  if (count > 1 && !_velocityHigh) {
+  if (count >1 && !_velocityHigh) {
     _velocityHigh = true;
     _rmState.velocityHigh = true;
 
@@ -3730,135 +3723,12 @@ function verifyOtp() {
 // above now ensures transaction_count and velocity_high are current
 // when that event fires.
 
-function origShowPage(id) { showPage(id); }
 
-// ═══════════════════════════════════════════════════════════════
-// USE CASE 4 — UNIFIED IDENTITY & TRUST MODULE
-// Three records (buyer / seller / merchant) merge into a single
-// trusted identity, a composite trust score is computed, and the
-// resulting escrow hold time is reduced. Purely additive — does
-// not modify any existing tracking, only appends new clean,
-// descriptive Segment events with rich traits.
-// ═══════════════════════════════════════════════════════════════
-
-const UNIFIED_IDENTITY_RECORD = {
-  unifiedProfileName: 'Priya',
-  buyer:    { recordId: '12345', transactionCount: 50, totalSpentUsd: 2000, disputeCount: 0 },
-  seller:   { recordId: '789',   transactionCount: 25, totalRevenueUsd: 5000, chargebackCount: 0 },
-  merchant: { recordId: 'M_456', payoutCount: '100+', riskProfile: 'clean' },
-};
-
-const TRUST_SCORE_RECORD = {
-  trustScore: 0.92,
-  trustScoreLabel: 'VERY HIGH',
-  components: {
-    transactionHistoryScore: 0.95,
-    disputeRateScore: 1.0,
-    timeOnPlatformScore: 0.9,
-    payoutHistoryScore: 0.95,
-  },
-};
-
-const ESCROW_OUTCOME_RECORD = {
-  escrowHoldBeforeDays: 30,
-  escrowHoldAfterDays: 5,
-  daysReleasedFaster: 25,
-  fasterPayoutRangeLowPct: 20,
-  fasterPayoutRangeHighPct: 30,
-  cashFlowImpactDescription: 'Millions in faster cash flow across merchants',
-};
-
-let _idtCurrentScreen = 1;
-
-function initIdentityTrust() {
-  _idtCurrentScreen = 1;
-  showIdentityScreen(1);
-
-  const email = getCurrentUser();
-  const user  = email ? getUserData(email) : null;
-  if (!user) return;
-
-  try {
-    analytics.track('Identity Trust Module Opened', {
-      merchantId: user.mid,
-      unifiedProfileName: UNIFIED_IDENTITY_RECORD.unifiedProfileName,
-      timestamp: new Date().toISOString(),
-    });
-  } catch(e) {}
-}
-
-function showIdentityScreen(screenNumber) {
-  _idtCurrentScreen = screenNumber;
-
-  [1, 2, 3].forEach(n => {
-    const el = document.getElementById('idt-screen-' + n);
-    if (el) el.style.display = (n === screenNumber) ? 'block' : 'none';
-  });
-  [1, 2, 3].forEach(n => {
-    const chainEl = document.getElementById('idtchain-' + n);
-    if (!chainEl) return;
-    chainEl.className = 'risk-event-step' + (n < screenNumber ? ' done' : n === screenNumber ? ' active' : '');
-  });
-
-  const email = getCurrentUser();
-  const user  = email ? getUserData(email) : null;
-  if (!user) return;
-  const ts = new Date().toISOString();
-
-  if (screenNumber === 1) {
-    const b = UNIFIED_IDENTITY_RECORD.buyer, s = UNIFIED_IDENTITY_RECORD.seller, m = UNIFIED_IDENTITY_RECORD.merchant;
-    try {
-      analytics.track('Unified Identity Records Merged', {
-        merchantId: user.mid,
-        unifiedProfileName: UNIFIED_IDENTITY_RECORD.unifiedProfileName,
-        buyerRecordId: b.recordId,
-        sellerRecordId: s.recordId,
-        merchantRecordId: m.recordId,
-        buyerTransactionCount: b.transactionCount,
-        buyerTotalSpentUsd: b.totalSpentUsd,
-        buyerDisputeCount: b.disputeCount,
-        sellerTransactionCount: s.transactionCount,
-        sellerTotalRevenueUsd: s.totalRevenueUsd,
-        sellerChargebackCount: s.chargebackCount,
-        merchantPayoutCount: m.payoutCount,
-        merchantRiskProfile: m.riskProfile,
-        recordsMergedCount: 3,
-        timestamp: ts,
-      });
-    } catch(e) {}
-  } else if (screenNumber === 2) {
-    const c = TRUST_SCORE_RECORD.components;
-    try {
-      analytics.track('Trust Score Computed', {
-        merchantId: user.mid,
-        unifiedProfileName: UNIFIED_IDENTITY_RECORD.unifiedProfileName,
-        trustScore: TRUST_SCORE_RECORD.trustScore,
-        trustScoreLabel: TRUST_SCORE_RECORD.trustScoreLabel,
-        transactionHistoryScore: c.transactionHistoryScore,
-        disputeRateScore: c.disputeRateScore,
-        timeOnPlatformScore: c.timeOnPlatformScore,
-        payoutHistoryScore: c.payoutHistoryScore,
-        timestamp: ts,
-      });
-    } catch(e) {}
-  } else if (screenNumber === 3) {
-    const o = ESCROW_OUTCOME_RECORD;
-    try {
-      analytics.track('Escrow Hold Time Reduced', {
-        merchantId: user.mid,
-        unifiedProfileName: UNIFIED_IDENTITY_RECORD.unifiedProfileName,
-        trustScore: TRUST_SCORE_RECORD.trustScore,
-        escrowHoldBeforeDays: o.escrowHoldBeforeDays,
-        escrowHoldAfterDays: o.escrowHoldAfterDays,
-        daysReleasedFaster: o.daysReleasedFaster,
-        fasterPayoutRangeLowPct: o.fasterPayoutRangeLowPct,
-        fasterPayoutRangeHighPct: o.fasterPayoutRangeHighPct,
-        cashFlowImpactDescription: o.cashFlowImpactDescription,
-        timestamp: ts,
-      });
-    } catch(e) {}
-  }
-}
+  origShowPage(id);
+  if (id === 'page-onboard1') { setTimeout(populateOnboardingForm, 100); }
+  if (id === 'page-onboard2') { renderDocGrid(); }
+  if (id === 'page-login') { ['li-email','li-pass'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const le=document.getElementById('li-err'); if(le) le.className='err-msg'; }
+  if (id === 'page-signup') { ['su-name','su-email','su-pass','su-pass2'].forEach(i => { const e=document.getElementById(i); if(e) e.value=''; }); const se=document.getElementById('su-err'); if(se) se.className='err-msg'; }
 
 </script>
 </body>
