@@ -6,52 +6,53 @@
 <title>CRUDPAY — Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* ── Core Palette ── */
-    --bg:         #0b0b0b;
-    --surface:    #141414;
-    --surface2:   #1c1c1c;
-    --surface3:   #222222;
-    --border:     #2b2b2b;
-    --border-muted: #1d1d1d;
+ :root {
+  /* ── Core Palette ── */
+  --bg: #0b0b0b;
+  --surface: #141414;
+  --surface2: #1c1c1c;
+  --surface3: #222222;
+  --border: #2b2b2b;
+  --border-muted: #1d1d1d;
 
-    /* ── FIXED: accent variables now properly defined ── */
-    --teal:   #909090;
-    --blue:   #7a7a7a;
-    --accent:  #909090;
-    --accent2: #7a7a7a;
-    --accent1: #909090;
+  /* ── Accent Colors ── */
+  --teal: #909090;
+  --blue: #7a7a7a;
+  --accent: #909090;
+  --accent1: #909090;
+  --accent2: #7a7a7a;
 
-    /* ── Semantic colours ── */
-    --danger:  #797979;
-    --warning: #a7a7a7;
-    --success: #808080;
+  /* ── Semantic Colours ── */
+  --danger: #797979;
+  --warning: #a7a7a7;
+  --success: #808080;
 
-    :root {
+  /* ── Typography ── */
   --text: #ffffff;
   --text-2: #ffffff;
   --text-3: #ffffff;
   --muted: #ffffff;
-  --mono:   'Poppins', sans-serif;
+  --mono: 'Poppins', sans-serif;
+
+  /* ── Card Background ── */
+  --card: #1a1a1a;
+
+  /* ── Spacing / Radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+
+  --glow-accent: 0 0 24px rgba(144,144,144,.18);
+  --glow-blue: 0 0 24px rgba(122,122,122,.18);
 }
     
 
-    /* ── Card background ── */
-    --card: #1a1a1a;
-
-    /* ── Spacing / radius system ── */
-    --radius-sm:  8px;
-    --radius-md:  12px;
-    --radius-lg:  16px;
-    --radius-xl:  20px;
-
-    /* ── Shadow tokens ── */
-    --shadow-sm:  0 1px 3px rgba(0,0,0,.4);
-    --shadow-md:  0 4px 16px rgba(0,0,0,.4);
-    --shadow-lg:  0 8px 32px rgba(0,0,0,.5);
-    --glow-accent: 0 0 24px rgba(144,144,144,.18);
-    --glow-blue:   0 0 24px rgba(122,122,122,.18);
-  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; scroll-behavior: smooth; }
   body {
