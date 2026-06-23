@@ -1081,7 +1081,6 @@
               <div class="profile-info">
                 <div class="profile-name" id="p-name">—</div>
                 <div class="profile-id" id="p-mid">MID: —</div>
-                <div id="p-status-badge"></div>
 </div>
 </div>
             <div class="profile-grid" id="profile-grid"></div>
@@ -2024,14 +2023,12 @@ function renderProfile(user) {
   document.getElementById('p-avatar').textContent = user.name[0].toUpperCase();
   document.getElementById('p-name').textContent   = user.name;
   document.getElementById('p-mid').textContent    = 'MID: ' + user.mid;
-  document.getElementById('p-status-badge').innerHTML = activationBadge(user.activationStatus);
   const fields = [
     ['Merchant ID', user.mid], ['Full Name', ((d.firstName||'') + ' ' + (d.lastName||'')).trim() || user.name],
     ['Email', user.email], ['Contact', d.contact || '—'], ['Country / Location', d.country || '—'],
     ['Enterprise Name', d.enterpriseName || '—'], ['Enterprise Address', d.enterpriseAddress || '—'],
     ['Business Type', d.businessType || '—'], ['Monthly Income', d.monthlyIncome ? '₹ ' + Number(d.monthlyIncome).toLocaleString('en-IN') : '—'],
     ['Account Created', new Date(user.createdAt).toLocaleString('en-IN')],
-    ['Activation Status', user.activationStatus],
   ];
   document.getElementById('profile-grid').innerHTML = fields.map(([k,v]) => `
     <div class="profile-field"><div class="pf-label">${k}</div><div class="pf-val">${v}</div></div>`).join('');
